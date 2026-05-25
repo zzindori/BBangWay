@@ -114,7 +114,10 @@
   .menu-btn .price { color: #555; font-size: 9px; }
   .menu-btn.flash-correct { background: #4caf50 !important; color: white; }
   .menu-btn.flash-wrong   { background: #f44336 !important; color: white; }
-  .menu-btn.selected { background: #ffe0b0; border-color: #e07000; }
+  .menu-btn.flash {
+  background: #ffe0b0 !important;
+  border-color: #ff8800 !important;
+}
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-thumb { background: #aaa; border-radius: 2px; }
@@ -811,7 +814,11 @@ function handleClick(item, btn) {
       updateScore();
     }
   } else {
-    btn.classList.toggle('selected');
+    btn.classList.add('flash');
+
+  setTimeout(() => {
+    btn.classList.remove('flash');
+  }, 180);
   }
 }
 
