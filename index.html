@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>은영 포스기 연습</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
   body {
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     background: #c8c8c8;
@@ -39,6 +39,7 @@
     font-weight: bold;
     color: #cc0000;
     font-size: 12px;
+    align-self: center;
   }
 
   .quiz-prompt {
@@ -115,7 +116,7 @@
     gap: 2px;
     word-break: keep-all;
   }
-  .menu-btn.blank { background: white; border: 1px solid #c0c0c0; cursor: default; pointer-events: none; }
+  .menu-btn.blank { background: white; border: 1px solid #c0c0c0; }
   .menu-btn:active { background: #cce0ff; border-color: #66a; }
   .menu-btn .price { color: #555; font-size: 9px; }
   .menu-btn.flash-correct { background: #4caf50 !important; color: white; }
@@ -131,6 +132,7 @@
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="topbar">
   <button class="btn-quiz-toggle" id="quizToggle" onclick="toggleQuiz()">퀴즈 시작</button>
   <span class="quiz-score" id="quizScore"></span>
@@ -139,6 +141,7 @@
   <span id="quizQuestion">—</span>
 </div>
 
+<!-- MAIN -->
 <div class="main">
   <div class="cat-area">
     <div class="cat-row" id="tabRow0"></div>
@@ -171,9 +174,9 @@ const TAB_PAGES = [
 ];
 
 // ============================================================
-// 메뉴 데이터 (원본 개행 유지)
+// 기본 메뉴 데이터 (원본 데이터 보존)
 // ============================================================
-const MENUS = {
+const DEFAULT_MENUS = {
   '식빵/파이류': [
     [
       {n:'버터롤',p:5300},          {n:'모찌모찌',p:6700},         {n:'우유식빵',p:5400},          {n:'잡곡식빵',p:6700},        {n:'토스트식빵',p:6800},
@@ -242,7 +245,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '케이크류': [
     [
       {n:'미니생크림',p:29000},         {n:'생크림1',p:38000},             {n:'생크림2',p:45000},             {n:'생크림3',p:53000},             {n:'블루베리\n미니',p:29000},
@@ -277,7 +279,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '피스/타르트': [
     [
       {n:'타르트',p:4900},               {n:'에그타르트',p:4300},           {n:'피칸호두\n파이',p:7900},       {n:'플랑\n파리지앵',p:4700},      null,
@@ -304,7 +305,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '선물용/잼': [
     [
       {n:'나가사끼\n(소)',p:5800},       {n:'카스테라\n(대)',p:22000},      {n:'딸기롤\n케이크',p:11000},     {n:'화이트롤 M',p:11000},           {n:'모카롤\n더블롤 M',p:11900},
@@ -323,7 +323,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '구움과자/건강빵': [
     [
       {n:'러스크',p:4800},               {n:'후람보아즈\n러스크',p:5200},  {n:'카라멜리제\n러스크',p:5200},  {n:'까놀레\n러스크',p:4800},       {n:'건강한시나몬\n러스크',p:4500},
@@ -342,7 +341,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '샌드위치/도넛': [
     [
       {n:'유럽의아침',p:6800},           {n:'치아바타\n샌드위치',p:9500},  {n:'효모베이글\n샌드위치',p:8500},{n:'과일샐러드',p:7400},           {n:'바게트\n샌드위치',p:8800},
@@ -361,10 +359,9 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '냉장/초코렛/마카롱': [
     [
-      {n:'마카롱',p:2700},               {n:'마카롱6개입\n세트',p:17500},  {n:'마카롱12개입\n세트',p:34000}, {n:'서쉐프마들렌',p:3400},         {n:'서쉐프초코\n마들렌',p:2500},
+      {n:'마카롱',p:2700},               {n:'마카롱6개입\n세트',p:17500},  {n:'마카롱12개입\n세트',p:34000}, {n:'서쉐프마들렌',p:3400},         {n:'서쉐ф초코\n마들렌',p:2500},
       {n:'컵케이크\n[4ea]',p:5800},     {n:'바나나케이크',p:4500},         {n:'천사의도넛\n구운도넛',p:3300},{n:'머핀',p:4200},                 {n:'호두롤',p:5500},
       {n:'레몬마이\n파운드',p:4800},    {n:'당근케이크',p:4800},           {n:'치즈브라우니',p:4900},         {n:'레몬케이크',p:3300},           {n:'휘낭시에',p:3000},
       {n:'쇼콜라갈레뜨\n후랑보와즈',p:3000},{n:'버터벌꽃\n카스테라',p:10000},{n:'한입파운드',p:3500},        {n:'로마지팡\n마들렌',p:3000},    {n:'마들렌',p:4200},
@@ -388,7 +385,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '쿠키/캔디': [
     [
       null,                              {n:'통쿠키',p:7300},               {n:'메이플샤브레\n(통쿠키)',p:9000},{n:'꼬깔머랭과\n쿠키',p:11000}, {n:'쫀득쿠키',p:8300},
@@ -407,7 +403,6 @@ const MENUS = {
       {n:'엥가디너',p:3000},             {n:'비스키슈크레',p:3200},         {n:'쇼콜라갈레트',p:3000},         {n:'쌀무화과샤브레',p:3000},       {n:'쇼콜라세삼',p:2500},
     ],
   ],
-
   '음료': [
     [
       {n:'아메리카노',p:5300},           {n:'카페라떼',p:5900},             {n:'바닐라라떼',p:6500},           {n:'카페모카',p:6500},             {n:'카라멜\n마까아또',p:6500},
@@ -458,7 +453,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '선물세트': [
     [
       {n:'본쿠키세트',p:31000},          {n:'샤브레세트',p:19000},          {n:'레몬케이크\n선물세트',p:21000},{n:'앵가디너세트',p:16000},       {n:'모나카쿠키\n세트',p:15000},
@@ -469,7 +463,6 @@ const MENUS = {
       null,                              {n:'사랑\n선물세트',p:50000},      null,                              null,                               null,
     ],
   ],
-
   '발렌타인/화이트': [
     [
       {n:'카라멜날개',p:700},             {n:'수제카라멜\n(4개입)',p:2200},  {n:'수제통카라멜\n(8개입)',p:6000},{n:'초콜릿바크\n(대)',p:19000},   {n:'초콜릿바크\n(소)',p:14000},
@@ -480,7 +473,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '딸기축제': [
     [
       null,                              {n:'수제\n딸기롤',p:11000},        {n:'딸기오블렛',p:7500},           {n:'딸기 쉬폰',p:8000},             {n:'딸기통아몬드\n봉봉',p:9000},
@@ -493,7 +485,7 @@ const MENUS = {
     [
       '◀',                              {n:'딸기패스츄리',p:4500},          {n:'딸기크로와상',p:5500},         {n:'영화농장\n딸기발',p:8900},    {n:'브리오슈\n엘리자베스',p:5800},
       {n:'딸기 동산',p:4500},            {n:'딸기 모찌',p:7400},            {n:'딸기기차1/2',p:4800},          {n:'딸기기차',p:9000},             {n:'딸기리본',p:5500},
-      {n:'말차요거트\n크림빵',p:7500},  {n:'딸기스쿤',p:3900},             {n:'딸기 꿀빵',p:4500},            {n:'딸기요거트\n소보로',p:4800},  null,
+      {n:'말차요거트\n림빵',p:7500},   {n:'딸기스쿤',p:3900},             {n:'딸기 꿀빵',p:4500},            {n:'딸기요거트\n소보로',p:4800},  null,
       null,                              null,                              null,                              null,                               null,
       {n:'딸기한가득',p:19000},          {n:'후르츠샌드',p:5300},           {n:'딸기메클레어',p:7500},         {n:'딸기생크림롤',p:5900},         {n:'딸기파베',p:6500},
       {n:'딸기생크림\n(피스)',p:7000},  {n:'딸기타르트\n(피스)',p:7500},   {n:'후레즈피스타치오',p:8000},     null,                               '▶',
@@ -507,7 +499,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '가정의달': [
     [
       {n:'명명이\n케이크',p:38000},     {n:'명명이케이크\n예약',p:34200}, {n:'병아리\n케이크',p:38000},     {n:'병아리케이크\n예약',p:34200}, null,
@@ -526,7 +517,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '크리스마스': [
     [
       {n:'슈톨렌\n조각',p:3400},          {n:'슈톨렌\n(미니)',p:19000},      {n:'헤피슈톨렌\n(미니포장)',p:20000}, {n:'슈톨렌 (중)',p:30000},       {n:'슈톨렌 (대)',p:47000},
@@ -537,7 +527,6 @@ const MENUS = {
       {n:'루즈\n쇼콜라',p:19000},         {n:'그린하우스',p:12000},       {n:'싼타하우스',p:8000},       {n:'르말차\n(미니)',p:19000},  null,
     ],
   ],
-
   '명절': [
     [
       {n:'만쥬',p:3300},                 {n:'앙갱',p:3500},                 null,                              null,                               null,
@@ -548,7 +537,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '빼빼로/수능/할로윈': [
     [
       {n:'수능\n병초코릿',p:15000},      {n:'수능\n봉봉\n2구',p:6000},    {n:'수능\n봉봉\n3구',p:12000},   {n:'수능\n봉봉\n4구',p:15000},   {n:'수능\n봉봉\n8구',p:30000},
@@ -567,7 +555,6 @@ const MENUS = {
       null,                              null,                              null,                              null,                               null,
     ],
   ],
-
   '가루쌀': [
     [
       null, null, null, null, null,
@@ -580,6 +567,8 @@ const MENUS = {
   ],
 };
 
+let MENUS = JSON.parse(localStorage.getItem('POS_USER_MENUS')) || DEFAULT_MENUS;
+
 // ============================================================
 // STATE
 // ============================================================
@@ -591,6 +580,9 @@ let quizWrong = 0;
 let quizTarget = null;
 let menuPage = 0;
 
+// 롱프레스(길게 누르기) 감지용 타이머 변수
+let pressTimer = null;
+
 // ============================================================
 // HELPERS
 // ============================================================
@@ -598,6 +590,48 @@ function normCat(label) { return label ? label.replace(/\n/g, '') : label; }
 function priceText(p) { return p == null ? '' : '(' + p.toLocaleString() + ')'; }
 function isBlankCell(cell) {
   return cell === null || cell === undefined || (typeof cell === 'object' && ((cell.n || '') === '') && cell.p == null);
+}
+
+function saveMenusToStorage() {
+  localStorage.setItem('POS_USER_MENUS', JSON.stringify(MENUS));
+}
+
+// ============================================================
+// LONG PRESS EVENT BINDING (길게 누르기 바인딩)
+// ============================================================
+function bindLongPress(btn, onLongPress, onClick) {
+  let isLongPress = false;
+
+  const start = (e) => {
+    // ◀, ▶ 제어 화살표나 빈 버튼 제외 처리 방지용 가드
+    if (btn.textContent === '◀' || btn.textContent === '▶') return;
+    
+    isLongPress = false;
+    pressTimer = setTimeout(() => {
+      isLongPress = true;
+      onLongPress();
+    }, 2000); // 2초(2000ms) 동안 누르면 수정 팝업 노출
+  };
+
+  const cancel = (e) => {
+    if (pressTimer) clearTimeout(pressTimer);
+  };
+
+  const end = (e) => {
+    if (pressTimer) clearTimeout(pressTimer);
+    if (!isLongPress && onClick) {
+      onClick(); // 일반 짧은 터치는 포스 입력 실행
+    }
+  };
+
+  // 모바일 터치 및 PC 마우스 이벤트 동시 대응
+  btn.addEventListener('touchstart', start, { passive: true });
+  btn.addEventListener('touchend', end, { passive: true });
+  btn.addEventListener('touchmove', cancel, { passive: true });
+  
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('mouseup', end);
+  btn.addEventListener('mouseleave', cancel);
 }
 
 // ============================================================
@@ -653,10 +687,16 @@ function renderTabs() {
 // ============================================================
 // RENDER MENUS
 // ============================================================
-function createBlankMenuButton() {
+function createBlankMenuButton(index) {
   const btn = document.createElement('button');
   btn.className = 'menu-btn blank';
   btn.innerHTML = '';
+  
+  // 빈 칸도 2초 누르면 신규 등록 창 오픈
+  bindLongPress(btn, 
+    () => handleEditItem(null, index),
+    null
+  );
   return btn;
 }
 
@@ -669,11 +709,16 @@ function createMenuNavButton(label, onClick) {
   return btn;
 }
 
-function createMenuItemButton(item) {
+function createMenuItemButton(item, index) {
   const btn = document.createElement('button');
   btn.className = 'menu-btn';
   btn.innerHTML = '<div>' + item.n.replace(/\n/g, '<br>') + '</div>' + (item.p != null ? '<div class="price">' + priceText(item.p) + '</div>' : '');
-  btn.onclick = () => handleClick(item, btn);
+  
+  // 메뉴 버튼에 롱프레스 믹스인 연동
+  bindLongPress(btn,
+    () => handleEditItem(item, index), // 2초 누르면 수정
+    () => handleClick(item, btn)       // 그냥 누르면 작동
+  );
   return btn;
 }
 
@@ -690,7 +735,7 @@ function renderMenus(reset=true) {
     const cells = pageData.slice(0, 30);
     while (cells.length < 30) cells.push(null);
 
-    cells.forEach((cell) => {
+    cells.forEach((cell, idx) => {
       if (cell === '▶') {
         grid.appendChild(createMenuNavButton('▶', () => {
           menuPage = Math.min(menuPage + 1, totalPages - 1);
@@ -702,9 +747,9 @@ function renderMenus(reset=true) {
           renderMenus(false);
         }));
       } else if (isBlankCell(cell)) {
-        grid.appendChild(createBlankMenuButton());
+        grid.appendChild(createBlankMenuButton(idx));
       } else {
-        grid.appendChild(createMenuItemButton(cell));
+        grid.appendChild(createMenuItemButton(cell, idx));
       }
     });
   } else {
@@ -731,15 +776,15 @@ function renderMenus(reset=true) {
     if (showNext) cells.push('▶');
     while (cells.length < SLOTS) cells.push(null);
 
-    cells.slice(0, SLOTS).forEach(cell => {
+    cells.slice(0, SLOTS).forEach((cell, idx) => {
       if (cell === '▶') {
         grid.appendChild(createMenuNavButton('▶', () => { menuPage++; renderMenus(false); }));
       } else if (cell === '◀') {
         grid.appendChild(createMenuNavButton('◀', () => { menuPage--; renderMenus(false); }));
       } else if (isBlankCell(cell)) {
-        grid.appendChild(createBlankMenuButton());
+        grid.appendChild(createBlankMenuButton(idx));
       } else {
-        grid.appendChild(createMenuItemButton(cell));
+        grid.appendChild(createMenuItemButton(cell, startIdx + idx - (showPrev ? 1 : 0)));
       }
     });
   }
@@ -773,6 +818,37 @@ function handleClick(item, btn) {
 function flash(btn, ok) {
   btn.classList.add(ok ? 'flash-correct' : 'flash-wrong');
   setTimeout(() => btn.classList.remove('flash-correct','flash-wrong'), 350);
+}
+
+// ============================================================
+// EDIT POPUP LOGIC
+// ============================================================
+function handleEditItem(item, idx) {
+  if (quizMode) return; // 퀴즈 도중 수정 락아웃 가드
+
+  const currentName = item ? item.n : '';
+  const currentPrice = item && item.p != null ? item.p : '';
+
+  // 1. 메뉴명 입력받기
+  const newName = prompt('📝 [메뉴 편집]\n줄바꿈이 필요한 위치에 \\n을 입력하세요.', currentName.replace(/\n/g, '\\n'));
+  if (newName === null) return; 
+
+  // 2. 가격 입력받기
+  const newPriceStr = prompt('💰 [가격 편집]\n숫자만 입력하세요. (가격 없으면 빈칸 혹은 null)', currentPrice);
+  if (newPriceStr === null) return;
+
+  const finalName = newName.replace(/\\n/g, '\n');
+  let finalPrice = newPriceStr.trim() === '' || newPriceStr.toLowerCase() === 'null' ? null : parseInt(newPriceStr.replace(/[^0-9]/g, ''), 10);
+  if (isNaN(finalPrice)) finalPrice = null;
+
+  if (finalName.trim() === '' && finalPrice === null) {
+    MENUS[currentCat][menuPage][idx] = null; 
+  } else {
+    MENUS[currentCat][menuPage][idx] = { n: finalName, p: finalPrice };
+  }
+
+  saveMenusToStorage(); // 수정 완료와 동시에 즉시 로컬 메모리 세이브
+  renderMenus(false);
 }
 
 // ============================================================
@@ -813,7 +889,6 @@ function nextQuiz() {
   if (!items.length) return;
   const pick = items[Math.floor(Math.random() * items.length)];
   quizTarget = pick.n;
-  // 상단 알림 바에서는 가독성을 위해 개행 문자만 공백으로 치환해 한 줄로 표시
   document.getElementById('quizQuestion').innerHTML = '찾을 메뉴: ' + pick.n.replace(/\n/g, ' ');
 }
 
