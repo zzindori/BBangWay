@@ -174,7 +174,6 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <button class="btn-quiz-toggle" id="quizToggle" onclick="toggleQuiz()">퀴즈 시작</button>
   <span class="quiz-score" id="quizScore"></span>
@@ -183,7 +182,6 @@
   <span id="quizQuestion">—</span>
 </div>
 
-<!-- MAIN -->
 <div class="main">
   <div class="cat-area">
     <div class="cat-row" id="tabRow0"></div>
@@ -198,7 +196,6 @@
   </div>
 </div>
 
-<!-- CUSTOM EDIT MODAL -->
 <div class="edit-modal" id="editModal">
   <div class="modal-content">
     <div class="modal-title">🔧 메뉴 편집 (5연타 기능)</div>
@@ -342,7 +339,7 @@ const DEFAULT_MENUS = {
     [
       {n:'타르트',p:4900},               {n:'에그타르트',p:4300},           {n:'피칸호두\n파이',p:7900},       {n:'플랑\n파리지앵',p:4700},      null,
       {n:'딸기\n타르트',p:7500},        {n:'과일\n타르트',p:7500},        {n:'블루베리\n타르트',p:7500},     {n:'무화과\n후레즈',p:7000},       {n:'뿐띠가또',p:7000},
-      {n:'레몬피치',p:7000},             {n:'暗코라떼',p:6800},           {n:'뉴욕치즈케이크\n(피스)',p:6800},{n:'쇼콜라\n후랑보아즈',p:7000},{n:'후로마쥬\n크렘시트롱',p:7000},
+      {n:'레몬피치',p:7000},             {n:'쇼콜라라떼',p:6800},           {n:'뉴욕치즈케이크\n(피스)',p:6800},{n:'쇼콜라\n후랑보아즈',p:7000},{n:'후로마쥬\n크렘시트롱',p:7000},
       {n:'딸기생크림\n피스',p:7000},    {n:'포레노아\n(피스)',p:7300},     {n:'크레이프후레즈\n(피스)',p:8000},{n:'본치즈피스',p:6800},          {n:'망고\n코코넛',p:7000},
       {n:'티라미수\n피스',p:7500},      {n:'밀크푸딩',p:4900},             {n:'카라멜\n수플레푸딩',p:5500},   {n:'그레이프후레즈\n젤리',p:7000},{n:'망고코코넛\n호지차',p:7000},
       {n:'메밀꽃필\n무렵',p:12000},    null,                              {n:'오랑쥬\n밀크라떼',p:7000},   {n:'마롱카시스',p:9800},            '▶',
@@ -504,7 +501,7 @@ const DEFAULT_MENUS = {
       null,                              {n:'딸기라떼',p:6900},             {n:'ice 우유',p:4800},             null,                               '▶',
     ],
     [
-      '◀',                              {n:'본누벨커스텀',p:7300},         {n:'팥추가',p:2000},               {n:'팥빙수',p:13500},               {n:'전보',p:null},
+      {n:'본누벨커스텀',p:7300},         {n:'팥추가',p:2000},               {n:'팥빙수',p:13500},               {n:'전보',p:null},
       null,                              null,                              null,                              null,                               null,
       null,                              null,                              null,                              null,                               null,
       null,                              null,                              null,                              null,                               null,
@@ -656,19 +653,20 @@ function saveMenusToStorage() {
 }
 
 // ============================================================
-// 5연타 클릭 제어 헬퍼 함수
+// 5연타 클릭 제어 보완 함수 (모바일 대응 강화형)
 // ============================================================
 function setupFiveClickEvent(btn, onFiveClicks, onSingleClick) {
   let clickCount = 0;
   let lastClickTime = 0;
 
+  // 모바일 터치 및 클릭 지연 간섭 방지를 위해 'click' 기반으로 통일하되 판정 시간 완화
   btn.addEventListener('click', (e) => {
     if (btn.textContent === '◀' || btn.textContent === '▶') return;
 
     const currentTime = new Date().getTime();
     
-    // 연타 판단 간격: 350ms 이내
-    if (currentTime - lastClickTime < 350) {
+    // 연타 판단 간격: 600ms 이내면 연속 타격으로 인정 (조금 느리게 눌러도 됨)
+    if (currentTime - lastClickTime < 600) {
       clickCount++;
     } else {
       clickCount = 1;
@@ -678,16 +676,16 @@ function setupFiveClickEvent(btn, onFiveClicks, onSingleClick) {
 
     if (clickCount === 5) {
       clickCount = 0; // 초기화
-      onFiveClicks();  // 5연타 시 모달 실행
+      onFiveClicks(); // 5연타 성공 시 수정 팝업 모달 실행
     } else {
-      // 짧은 지연 후 연타가 아니면 일반 단일 클릭 수행
+      // 600ms 뒤에 연타 기록이 멈추면 일반 단일 클릭 수행
       setTimeout(() => {
         const checkTime = new Date().getTime();
-        if (checkTime - lastClickTime >= 350 && clickCount > 0) {
+        if (checkTime - lastClickTime >= 600 && clickCount > 0) {
           clickCount = 0;
           if (onSingleClick) onSingleClick();
         }
-      }, 350);
+      }, 600);
     }
   });
 }
@@ -772,10 +770,10 @@ function createMenuItemButton(item, index) {
   btn.className = 'menu-btn';
   btn.innerHTML = '<div>' + item.n.replace(/\n/g, '<br>') + '</div>' + (item.p != null ? '<div class="price">' + priceText(item.p) + '</div>' : '');
   
-  // 5연타 믹스인 연동
+  // 5연타 제어 연동
   setupFiveClickEvent(btn,
-    () => openEditModal(item, index), // 5번 클릭 시 팝업 열기
-    () => handleClick(item, btn)       // 1번 클릭 시 포스 찍기
+    () => openEditModal(item, index), // 5번 탭 시 팝업 열기
+    () => handleClick(item, btn)      // 1번 탭 시 포스기 클릭 적용
   );
   return btn;
 }
@@ -908,7 +906,6 @@ function saveEditModal() {
   const nameVal = document.getElementById('modalNameInput').value;
   const priceVal = document.getElementById('modalPriceInput').value;
 
-  // 엔터 키 입력으로 생성된 개행 처리 유지
   const finalName = nameVal; 
   let finalPrice = priceVal.trim() === '' || priceVal.toLowerCase() === 'null' ? null : parseInt(priceVal.replace(/[^0-9]/g, ''), 10);
   if (isNaN(finalPrice)) finalPrice = null;
