@@ -25,6 +25,10 @@
     padding: 5px 8px;
     flex-shrink: 0;
   }
+  .topbar-left {
+    display: flex;
+    gap: 6px;
+  }
   .btn-quiz-toggle {
     padding: 5px 14px;
     border: none;
@@ -35,6 +39,18 @@
     cursor: pointer;
     border-radius: 3px;
   }
+  .btn-export-data {
+    padding: 5px 10px;
+    border: 1px solid #555;
+    background: #4caf50;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .btn-export-data:active { background: #388e3c; }
+
   .quiz-score {
     font-weight: bold;
     color: #cc0000;
@@ -100,7 +116,7 @@
   .menu-grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(6, 1fr); gap: 3px; height: 100%; min-height: 320px; }
 
   .menu-btn {
-    position: relative; /* 카운터 배치를 위한 기준점 지정 */
+    position: relative;
     background: white;
     border: 1px solid #c0c0c0;
     padding: 4px 3px;
@@ -127,19 +143,13 @@
     border-color: #ff8800 !important;
   }
 
-  /* 연타 횟수 시각적 카운터 배지 스타일 */
   .click-badge {
     position: absolute;
-    bottom: 2px;
-    right: 3px;
-    background: #ff8800;
-    color: white;
-    font-size: 8.5px;
-    font-weight: bold;
-    padding: 1px 3px;
-    border-radius: 3px;
-    display: none;
-    pointer-events: none; /* 터치 이벤트가 배지에 막히지 않도록 방지 */
+    bottom: 2px; right: 3px;
+    background: #ff8800; color: white;
+    font-size: 8.5px; font-weight: bold;
+    padding: 1px 3px; border-radius: 3px;
+    display: none; pointer-events: none;
   }
 
   /* 커스텀 수정 모달 팝업 스타일 */
@@ -191,7 +201,10 @@
 <body>
 
 <div class="topbar">
-  <button class="btn-quiz-toggle" id="quizToggle" onclick="toggleQuiz()">퀴즈 시작</button>
+  <div class="topbar-left">
+    <button class="btn-quiz-toggle" id="quizToggle" onclick="toggleQuiz()">퀴즈 시작</button>
+    <button class="btn-export-data" onclick="exportMenusToKakao()">📤 데이터 내보내기</button>
+  </div>
   <span class="quiz-score" id="quizScore"></span>
 </div>
 <div class="quiz-prompt" id="quizPrompt">
@@ -669,7 +682,7 @@ function saveMenusToStorage() {
 }
 
 // ============================================================
-// 5연타 제어 로직 (카운터 배지 실시간 업데이트 포함)
+// 5연타 클릭 제어 로직 (카운터 배지 실시간 업데이트 포함)
 // ============================================================
 function setupFiveClickEvent(btn, badgeEl, onFiveClicks, onSingleClick) {
   let clickCount = 0;
@@ -678,22 +691,17 @@ function setupFiveClickEvent(btn, badgeEl, onFiveClicks, onSingleClick) {
   btn.addEventListener('click', (e) => {
     if (btn.textContent === '◀' || btn.textContent === '▶') return;
 
-    // 타이머가 작동 중이었다면 지우고 연타 카운트 증가
     if (timerId) clearTimeout(timerId);
-    
     clickCount++;
     
-    // 배지 노출 및 스코어 표시
     badgeEl.textContent = `${clickCount}/5`;
     badgeEl.style.display = 'block';
 
     if (clickCount === 5) {
-      // 5연타 완료 즉시 데이터 초기화 및 모달 팝업 가동
       clickCount = 0;
       badgeEl.style.display = 'none';
       onFiveClicks();
     } else {
-      // 0.6초(600ms) 동안 후속 입력이 없으면 일반 단일 클릭으로 리셋
       timerId = setTimeout(() => {
         clickCount = 0;
         badgeEl.style.display = 'none';
@@ -701,6 +709,34 @@ function setupFiveClickEvent(btn, badgeEl, onFiveClicks, onSingleClick) {
       }, 600);
     }
   });
+}
+
+// ============================================================
+// 📤 데이터 카톡 전송용 문자열 변환 및 복사 함수
+// ============================================================
+function exportMenusToKakao() {
+  try {
+    const dataStr = JSON.stringify(MENUS, null, 2);
+    
+    // 모바일 및 다양한 브라우저 호환 복사 로직
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(dataStr).then(() => {
+        alert('📤 포스기 메뉴 데이터가 복사되었습니다!\n\n카카오톡을 열고 개발자님에게 [붙여넣기]해서 전송해 주세요.');
+      });
+    } else {
+      // 대체 영역 생성 후 복사 방식 가동
+      const textArea = document.createElement("textarea");
+      textArea.value = dataStr;
+      textArea.style.position = "fixed"; 
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('📤 포스기 메뉴 데이터가 복사되었습니다!\n\n카카오톡을 열고 개발자님에게 [붙여넣기]해서 전송해 주세요.');
+    }
+  } catch (err) {
+    alert('데이터 추출 중 요류가 발생했습니다.');
+  }
 }
 
 // ============================================================
@@ -783,7 +819,6 @@ function renderMenus(reset=true) {
       }
     });
 
-    // 30칸 그리드 강제 맞춤
     while (grid.children.length < 30) {
       grid.appendChild(createGenericButton(null, grid.children.length));
     }
@@ -799,7 +834,6 @@ function createMenuNavButton(label, onClick) {
   return btn;
 }
 
-// 빈 칸과 일반 메뉴 버튼 생성을 하나로 통합한 범용 빌더 함수
 function createGenericButton(item, index) {
   const btn = document.createElement('button');
   btn.className = 'menu-btn';
@@ -810,12 +844,10 @@ function createGenericButton(item, index) {
     btn.classList.add('blank');
   }
 
-  // 실시간 연타 카운터 배지 DOM 동적 생성 및 바인딩
   const badge = document.createElement('div');
   badge.className = 'click-badge';
   btn.appendChild(badge);
 
-  // 5연타 제어 엔진 가동
   setupFiveClickEvent(btn, badge,
     () => openEditModal(item, index),
     () => { if (item) handleClick(item, btn); }
@@ -824,7 +856,6 @@ function createGenericButton(item, index) {
   return btn;
 }
 
-// 클릭 유효성 판단 (줄바꿈(\n)과 공백을 모두 제거한 후 내부값 비교)
 function handleClick(item, btn) {
   if (quizMode && quizTarget) {
     const cleanItemName = item.n.replace(/[\n\s]/g, '');
@@ -872,6 +903,7 @@ function openEditModal(item, idx) {
   nameInput.focus();
 }
 
+// ... 중간 중복 로직 유지 보존 및 마무리 제어 ...
 function closeEditModal() {
   document.getElementById('editModal').classList.remove('show');
   activeEditIndex = null;
