@@ -126,6 +126,48 @@
     border-color: #ff8800 !important;
   }
 
+  /* 커스텀 수정 모달 팝업 스타일 */
+  .edit-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit-modal.show { display: flex; }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 85%;
+    max-width: 320px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  .modal-title { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; text-align: center; }
+  .modal-label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+  .modal-content textarea {
+    width: 100%; height: 60px;
+    padding: 8px; font-size: 13px;
+    border: 1px solid #ccc; border-radius: 4px;
+    resize: none; margin-bottom: 12px;
+    font-family: inherit; user-select: text; -webkit-user-select: text;
+  }
+  .modal-content input {
+    width: 100%; padding: 8px; font-size: 13px;
+    border: 1px solid #ccc; border-radius: 4px;
+    margin-bottom: 16px; font-family: inherit;
+    user-select: text; -webkit-user-select: text;
+  }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btn {
+    flex: 1; padding: 10px; border: none; border-radius: 4px;
+    font-size: 13px; font-weight: bold; cursor: pointer;
+  }
+  .btn-save { background: #ff8800; color: white; }
+  .btn-cancel { background: #ddd; color: #333; }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-thumb { background: #aaa; border-radius: 2px; }
 </style>
@@ -153,6 +195,23 @@
 
   <div class="menu-area">
     <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</div>
+
+<!-- CUSTOM EDIT MODAL -->
+<div class="edit-modal" id="editModal">
+  <div class="modal-content">
+    <div class="modal-title">🔧 메뉴 편집 (5연타 기능)</div>
+    <label class="modal-label">메뉴 이름 (줄바꿈은 Enter 키 입력)</label>
+    <textarea id="modalNameInput" placeholder="메뉴명 입력"></textarea>
+    
+    <label class="modal-label">가격 (숫자만 입력)</label>
+    <input type="text" id="modalPriceInput" placeholder="가격 입력 (없으면 비우기)">
+    
+    <div class="modal-btns">
+      <button class="modal-btn btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="modal-btn btn-save" onclick="saveEditModal()">저장</button>
+    </div>
   </div>
 </div>
 
@@ -283,7 +342,7 @@ const DEFAULT_MENUS = {
     [
       {n:'타르트',p:4900},               {n:'에그타르트',p:4300},           {n:'피칸호두\n파이',p:7900},       {n:'플랑\n파리지앵',p:4700},      null,
       {n:'딸기\n타르트',p:7500},        {n:'과일\n타르트',p:7500},        {n:'블루베리\n타르트',p:7500},     {n:'무화과\n후레즈',p:7000},       {n:'뿐띠가또',p:7000},
-      {n:'레몬피치',p:7000},             {n:'쇼콜라라떼',p:6800},           {n:'뉴욕치즈케이크\n(피스)',p:6800},{n:'쇼콜라\n후랑보아즈',p:7000},{n:'후로마쥬\n크렘시트롱',p:7000},
+      {n:'레몬피치',p:7000},             {n:'暗코라떼',p:6800},           {n:'뉴욕치즈케이크\n(피스)',p:6800},{n:'쇼콜라\n후랑보아즈',p:7000},{n:'후로마쥬\n크렘시트롱',p:7000},
       {n:'딸기생크림\n피스',p:7000},    {n:'포레노아\n(피스)',p:7300},     {n:'크레이프후레즈\n(피스)',p:8000},{n:'본치즈피스',p:6800},          {n:'망고\n코코넛',p:7000},
       {n:'티라미수\n피스',p:7500},      {n:'밀크푸딩',p:4900},             {n:'카라멜\n수플레푸딩',p:5500},   {n:'그레이프후레즈\n젤리',p:7000},{n:'망고코코넛\n호지차',p:7000},
       {n:'메밀꽃필\n무렵',p:12000},    null,                              {n:'오랑쥬\n밀크라떼',p:7000},   {n:'마롱카시스',p:9800},            '▶',
@@ -361,7 +420,7 @@ const DEFAULT_MENUS = {
   ],
   '냉장/초코렛/마카롱': [
     [
-      {n:'마카롱',p:2700},               {n:'마카롱6개입\n세트',p:17500},  {n:'마카롱12개입\n세트',p:34000}, {n:'서쉐프마들렌',p:3400},         {n:'서쉐ф초코\n마들렌',p:2500},
+      {n:'마카롱',p:2700},               {n:'마카롱6개입\n세트',p:17500},  {n:'마카롱12개입\n세트',p:34000}, {n:'서쉐프마들렌',p:3400},         {n:'서쉐프초코\n마들렌',p:2500},
       {n:'컵케이크\n[4ea]',p:5800},     {n:'바나나케이크',p:4500},         {n:'천사의도넛\n구운도넛',p:3300},{n:'머핀',p:4200},                 {n:'호두롤',p:5500},
       {n:'레몬마이\n파운드',p:4800},    {n:'당근케이크',p:4800},           {n:'치즈브라우니',p:4900},         {n:'레몬케이크',p:3300},           {n:'휘낭시에',p:3000},
       {n:'쇼콜라갈레뜨\n후랑보와즈',p:3000},{n:'버터벌꽃\n카스테라',p:10000},{n:'한입파운드',p:3500},        {n:'로마지팡\n마들렌',p:3000},    {n:'마들렌',p:4200},
@@ -485,7 +544,7 @@ const DEFAULT_MENUS = {
     [
       '◀',                              {n:'딸기패스츄리',p:4500},          {n:'딸기크로와상',p:5500},         {n:'영화농장\n딸기발',p:8900},    {n:'브리오슈\n엘리자베스',p:5800},
       {n:'딸기 동산',p:4500},            {n:'딸기 모찌',p:7400},            {n:'딸기기차1/2',p:4800},          {n:'딸기기차',p:9000},             {n:'딸기리본',p:5500},
-      {n:'말차요거트\n림빵',p:7500},   {n:'딸기스쿤',p:3900},             {n:'딸기 꿀빵',p:4500},            {n:'딸기요거트\n소보로',p:4800},  null,
+      {n:'말차요거트\n크림빵',p:7500},  {n:'딸기스쿤',p:3900},             {n:'딸기 꿀빵',p:4500},            {n:'딸기요거트\n소보로',p:4800},  null,
       null,                              null,                              null,                              null,                               null,
       {n:'딸기한가득',p:19000},          {n:'후르츠샌드',p:5300},           {n:'딸기메클레어',p:7500},         {n:'딸기생크림롤',p:5900},         {n:'딸기파베',p:6500},
       {n:'딸기생크림\n(피스)',p:7000},  {n:'딸기타르트\n(피스)',p:7500},   {n:'후레즈피스타치오',p:8000},     null,                               '▶',
@@ -580,8 +639,8 @@ let quizWrong = 0;
 let quizTarget = null;
 let menuPage = 0;
 
-// 롱프레스(길게 누르기) 감지용 타이머 변수
-let pressTimer = null;
+// 모달 수정 타겟 임시 저장 변수
+let activeEditIndex = null;
 
 // ============================================================
 // HELPERS
@@ -597,41 +656,40 @@ function saveMenusToStorage() {
 }
 
 // ============================================================
-// LONG PRESS EVENT BINDING (길게 누르기 바인딩)
+// 5연타 클릭 제어 헬퍼 함수
 // ============================================================
-function bindLongPress(btn, onLongPress, onClick) {
-  let isLongPress = false;
+function setupFiveClickEvent(btn, onFiveClicks, onSingleClick) {
+  let clickCount = 0;
+  let lastClickTime = 0;
 
-  const start = (e) => {
-    // ◀, ▶ 제어 화살표나 빈 버튼 제외 처리 방지용 가드
+  btn.addEventListener('click', (e) => {
     if (btn.textContent === '◀' || btn.textContent === '▶') return;
+
+    const currentTime = new Date().getTime();
     
-    isLongPress = false;
-    pressTimer = setTimeout(() => {
-      isLongPress = true;
-      onLongPress();
-    }, 2000); // 2초(2000ms) 동안 누르면 수정 팝업 노출
-  };
-
-  const cancel = (e) => {
-    if (pressTimer) clearTimeout(pressTimer);
-  };
-
-  const end = (e) => {
-    if (pressTimer) clearTimeout(pressTimer);
-    if (!isLongPress && onClick) {
-      onClick(); // 일반 짧은 터치는 포스 입력 실행
+    // 연타 판단 간격: 350ms 이내
+    if (currentTime - lastClickTime < 350) {
+      clickCount++;
+    } else {
+      clickCount = 1;
     }
-  };
+    
+    lastClickTime = currentTime;
 
-  // 모바일 터치 및 PC 마우스 이벤트 동시 대응
-  btn.addEventListener('touchstart', start, { passive: true });
-  btn.addEventListener('touchend', end, { passive: true });
-  btn.addEventListener('touchmove', cancel, { passive: true });
-  
-  btn.addEventListener('mousedown', start);
-  btn.addEventListener('mouseup', end);
-  btn.addEventListener('mouseleave', cancel);
+    if (clickCount === 5) {
+      clickCount = 0; // 초기화
+      onFiveClicks();  // 5연타 시 모달 실행
+    } else {
+      // 짧은 지연 후 연타가 아니면 일반 단일 클릭 수행
+      setTimeout(() => {
+        const checkTime = new Date().getTime();
+        if (checkTime - lastClickTime >= 350 && clickCount > 0) {
+          clickCount = 0;
+          if (onSingleClick) onSingleClick();
+        }
+      }, 350);
+    }
+  });
 }
 
 // ============================================================
@@ -692,9 +750,9 @@ function createBlankMenuButton(index) {
   btn.className = 'menu-btn blank';
   btn.innerHTML = '';
   
-  // 빈 칸도 2초 누르면 신규 등록 창 오픈
-  bindLongPress(btn, 
-    () => handleEditItem(null, index),
+  // 빈 칸도 5번 연타 시 편집창 오픈
+  setupFiveClickEvent(btn, 
+    () => openEditModal(null, index),
     null
   );
   return btn;
@@ -714,10 +772,10 @@ function createMenuItemButton(item, index) {
   btn.className = 'menu-btn';
   btn.innerHTML = '<div>' + item.n.replace(/\n/g, '<br>') + '</div>' + (item.p != null ? '<div class="price">' + priceText(item.p) + '</div>' : '');
   
-  // 메뉴 버튼에 롱프레스 믹스인 연동
-  bindLongPress(btn,
-    () => handleEditItem(item, index), // 2초 누르면 수정
-    () => handleClick(item, btn)       // 그냥 누르면 작동
+  // 5연타 믹스인 연동
+  setupFiveClickEvent(btn,
+    () => openEditModal(item, index), // 5번 클릭 시 팝업 열기
+    () => handleClick(item, btn)       // 1번 클릭 시 포스 찍기
   );
   return btn;
 }
@@ -821,33 +879,49 @@ function flash(btn, ok) {
 }
 
 // ============================================================
-// EDIT POPUP LOGIC
+// MODAL POPUP DIALOG LOGIC (수정 모달 로직)
 // ============================================================
-function handleEditItem(item, idx) {
-  if (quizMode) return; // 퀴즈 도중 수정 락아웃 가드
+function openEditModal(item, idx) {
+  if (quizMode) return; // 퀴즈 가드
 
-  const currentName = item ? item.n : '';
-  const currentPrice = item && item.p != null ? item.p : '';
+  activeEditIndex = idx;
+  const modal = document.getElementById('editModal');
+  const nameInput = document.getElementById('modalNameInput');
+  const priceInput = document.getElementById('modalPriceInput');
 
-  // 1. 메뉴명 입력받기
-  const newName = prompt('📝 [메뉴 편집]\n줄바꿈이 필요한 위치에 \\n을 입력하세요.', currentName.replace(/\n/g, '\\n'));
-  if (newName === null) return; 
+  // 모달 입력 칸 초기 세팅 (실제 엔터 개행 적용)
+  nameInput.value = item ? item.n : '';
+  priceInput.value = item && item.p != null ? item.p : '';
 
-  // 2. 가격 입력받기
-  const newPriceStr = prompt('💰 [가격 편집]\n숫자만 입력하세요. (가격 없으면 빈칸 혹은 null)', currentPrice);
-  if (newPriceStr === null) return;
+  modal.classList.add('show');
+  nameInput.focus();
+}
 
-  const finalName = newName.replace(/\\n/g, '\n');
-  let finalPrice = newPriceStr.trim() === '' || newPriceStr.toLowerCase() === 'null' ? null : parseInt(newPriceStr.replace(/[^0-9]/g, ''), 10);
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('show');
+  activeEditIndex = null;
+}
+
+function saveEditModal() {
+  if (activeEditIndex === null) return;
+
+  const nameVal = document.getElementById('modalNameInput').value;
+  const priceVal = document.getElementById('modalPriceInput').value;
+
+  // 엔터 키 입력으로 생성된 개행 처리 유지
+  const finalName = nameVal; 
+  let finalPrice = priceVal.trim() === '' || priceVal.toLowerCase() === 'null' ? null : parseInt(priceVal.replace(/[^0-9]/g, ''), 10);
   if (isNaN(finalPrice)) finalPrice = null;
 
+  // 값 갱신
   if (finalName.trim() === '' && finalPrice === null) {
-    MENUS[currentCat][menuPage][idx] = null; 
+    MENUS[currentCat][menuPage][activeEditIndex] = null;
   } else {
-    MENUS[currentCat][menuPage][idx] = { n: finalName, p: finalPrice };
+    MENUS[currentCat][menuPage][activeEditIndex] = { n: finalName, p: finalPrice };
   }
 
-  saveMenusToStorage(); // 수정 완료와 동시에 즉시 로컬 메모리 세이브
+  saveMenusToStorage(); // 로컬 세이브
+  closeEditModal();
   renderMenus(false);
 }
 
