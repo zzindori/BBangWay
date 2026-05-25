@@ -100,6 +100,7 @@
   .menu-grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(6, 1fr); gap: 3px; height: 100%; min-height: 320px; }
 
   .menu-btn {
+    position: relative; /* 카운터 배치를 위한 기준점 지정 */
     background: white;
     border: 1px solid #c0c0c0;
     padding: 4px 3px;
@@ -124,6 +125,21 @@
   .menu-btn.flash {
     background: #ffe0b0 !important;
     border-color: #ff8800 !important;
+  }
+
+  /* 연타 횟수 시각적 카운터 배지 스타일 */
+  .click-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 3px;
+    background: #ff8800;
+    color: white;
+    font-size: 8.5px;
+    font-weight: bold;
+    padding: 1px 3px;
+    border-radius: 3px;
+    display: none;
+    pointer-events: none; /* 터치 이벤트가 배지에 막히지 않도록 방지 */
   }
 
   /* 커스텀 수정 모달 팝업 스타일 */
@@ -521,7 +537,7 @@ const DEFAULT_MENUS = {
   ],
   '발렌타인/화이트': [
     [
-      {n:'카라멜날개',p:700},             {n:'수제카라멜\n(4개입)',p:2200},  {n:'수제통카라멜\n(8개입)',p:6000},{n:'초콜릿바크\n(대)',p:19000},   {n:'초콜릿바크\n(소)',p:14000},
+      {n:'카라멜날개',p:700},             {n:'수제카라멜\n(4개입)',p:2200},  {n:'수제통카라멜\n(8개입)',p:6000},{n:'초콜릿바크\n(대)',p:19000},   {n:'초코릿바크\n(소)',p:14000},
       {n:'수제캔디',p:4000},             null,                              {n:'통아몬드캔디\n(박스)',p:8000}, {n:'트리플초콜렛',p:3800},         null,
       null,                              null,                              {n:'스위트픽백',p:4000},            null,                               null,
       null,                              null,                              null,                              {n:'통아몬드캔디',p:7000},         null,
@@ -628,13 +644,13 @@ let MENUS = JSON.parse(localStorage.getItem('POS_USER_MENUS')) || DEFAULT_MENUS;
 // ============================================================
 // STATE
 // ============================================================
-let currentPage = 0;
 let currentCat = '식빵/파이류';
 let quizMode = false;
 let quizCorrect = 0;
 let quizWrong = 0;
 let quizTarget = null;
 let menuPage = 0;
+let currentPage = 0;
 
 // 모달 수정 타겟 임시 저장 변수
 let activeEditIndex = null;
@@ -653,38 +669,35 @@ function saveMenusToStorage() {
 }
 
 // ============================================================
-// 5연타 클릭 제어 보완 함수 (모바일 대응 강화형)
+// 5연타 제어 로직 (카운터 배지 실시간 업데이트 포함)
 // ============================================================
-function setupFiveClickEvent(btn, onFiveClicks, onSingleClick) {
+function setupFiveClickEvent(btn, badgeEl, onFiveClicks, onSingleClick) {
   let clickCount = 0;
-  let lastClickTime = 0;
+  let timerId = null;
 
-  // 모바일 터치 및 클릭 지연 간섭 방지를 위해 'click' 기반으로 통일하되 판정 시간 완화
   btn.addEventListener('click', (e) => {
     if (btn.textContent === '◀' || btn.textContent === '▶') return;
 
-    const currentTime = new Date().getTime();
+    // 타이머가 작동 중이었다면 지우고 연타 카운트 증가
+    if (timerId) clearTimeout(timerId);
     
-    // 연타 판단 간격: 600ms 이내면 연속 타격으로 인정 (조금 느리게 눌러도 됨)
-    if (currentTime - lastClickTime < 600) {
-      clickCount++;
-    } else {
-      clickCount = 1;
-    }
+    clickCount++;
     
-    lastClickTime = currentTime;
+    // 배지 노출 및 스코어 표시
+    badgeEl.textContent = `${clickCount}/5`;
+    badgeEl.style.display = 'block';
 
     if (clickCount === 5) {
-      clickCount = 0; // 초기화
-      onFiveClicks(); // 5연타 성공 시 수정 팝업 모달 실행
+      // 5연타 완료 즉시 데이터 초기화 및 모달 팝업 가동
+      clickCount = 0;
+      badgeEl.style.display = 'none';
+      onFiveClicks();
     } else {
-      // 600ms 뒤에 연타 기록이 멈추면 일반 단일 클릭 수행
-      setTimeout(() => {
-        const checkTime = new Date().getTime();
-        if (checkTime - lastClickTime >= 600 && clickCount > 0) {
-          clickCount = 0;
-          if (onSingleClick) onSingleClick();
-        }
+      // 0.6초(600ms) 동안 후속 입력이 없으면 일반 단일 클릭으로 리셋
+      timerId = setTimeout(() => {
+        clickCount = 0;
+        badgeEl.style.display = 'none';
+        if (onSingleClick) onSingleClick();
       }, 600);
     }
   });
@@ -743,17 +756,38 @@ function renderTabs() {
 // ============================================================
 // RENDER MENUS
 // ============================================================
-function createBlankMenuButton(index) {
-  const btn = document.createElement('button');
-  btn.className = 'menu-btn blank';
-  btn.innerHTML = '';
-  
-  // 빈 칸도 5번 연타 시 편집창 오픈
-  setupFiveClickEvent(btn, 
-    () => openEditModal(null, index),
-    null
-  );
-  return btn;
+function renderMenus(reset=true) {
+  if (reset) menuPage = 0;
+  const grid = document.getElementById('menuGrid');
+  grid.innerHTML = '';
+
+  const catData = MENUS[currentCat] || [];
+  if (Array.isArray(catData[0])) {
+    const pageData = catData[menuPage] || [];
+    
+    pageData.forEach((cell, idx) => {
+      if (cell === '▶') {
+        grid.appendChild(createMenuNavButton('▶', () => {
+          menuPage = Math.min(menuPage + 1, catData.length - 1);
+          renderMenus(false);
+        }));
+      } else if (cell === '◀') {
+        grid.appendChild(createMenuNavButton('◀', () => {
+          menuPage = Math.max(menuPage - 1, 0);
+          renderMenus(false);
+        }));
+      } else if (isBlankCell(cell)) {
+        grid.appendChild(createGenericButton(null, idx));
+      } else {
+        grid.appendChild(createGenericButton(cell, idx));
+      }
+    });
+
+    // 30칸 그리드 강제 맞춤
+    while (grid.children.length < 30) {
+      grid.appendChild(createGenericButton(null, grid.children.length));
+    }
+  }
 }
 
 function createMenuNavButton(label, onClick) {
@@ -765,85 +799,29 @@ function createMenuNavButton(label, onClick) {
   return btn;
 }
 
-function createMenuItemButton(item, index) {
+// 빈 칸과 일반 메뉴 버튼 생성을 하나로 통합한 범용 빌더 함수
+function createGenericButton(item, index) {
   const btn = document.createElement('button');
   btn.className = 'menu-btn';
-  btn.innerHTML = '<div>' + item.n.replace(/\n/g, '<br>') + '</div>' + (item.p != null ? '<div class="price">' + priceText(item.p) + '</div>' : '');
-  
-  // 5연타 제어 연동
-  setupFiveClickEvent(btn,
-    () => openEditModal(item, index), // 5번 탭 시 팝업 열기
-    () => handleClick(item, btn)      // 1번 탭 시 포스기 클릭 적용
-  );
-  return btn;
-}
 
-function renderMenus(reset=true) {
-  if (reset) menuPage = 0;
-  const grid = document.getElementById('menuGrid');
-  grid.innerHTML = '';
-
-  const catData = MENUS[currentCat] || [];
-  if (Array.isArray(catData[0])) {
-    const pageData = catData[menuPage] || [];
-    const totalPages = catData.length;
-    
-    const cells = pageData.slice(0, 30);
-    while (cells.length < 30) cells.push(null);
-
-    cells.forEach((cell, idx) => {
-      if (cell === '▶') {
-        grid.appendChild(createMenuNavButton('▶', () => {
-          menuPage = Math.min(menuPage + 1, totalPages - 1);
-          renderMenus(false);
-        }));
-      } else if (cell === '◀') {
-        grid.appendChild(createMenuNavButton('◀', () => {
-          menuPage = Math.max(menuPage - 1, 0);
-          renderMenus(false);
-        }));
-      } else if (isBlankCell(cell)) {
-        grid.appendChild(createBlankMenuButton(idx));
-      } else {
-        grid.appendChild(createMenuItemButton(cell, idx));
-      }
-    });
+  if (item) {
+    btn.innerHTML = '<div>' + item.n.replace(/\n/g, '<br>') + '</div>' + (item.p != null ? '<div class="price">' + priceText(item.p) + '</div>' : '');
   } else {
-    const allItems = catData;
-    const SLOTS = 30;
-    const FIRST = SLOTS - 1; 
-    const MID   = SLOTS - 2; 
-    const total = allItems.length;
-    let startIdx, endIdx, showPrev, showNext;
-    if (total <= FIRST) {
-      startIdx = 0; endIdx = total; showPrev = false; showNext = false;
-    } else if (menuPage === 0) {
-      startIdx = 0; endIdx = FIRST; showPrev = false; showNext = true;
-    } else {
-      startIdx = FIRST + (menuPage-1) * MID;
-      const rem = total - startIdx;
-      if (rem > MID) { endIdx = startIdx + MID; showPrev = true; showNext = true; }
-      else { endIdx = total; showPrev = true; showNext = false; }
-    }
-
-    const cells = [];
-    if (showPrev) cells.push('◀');
-    allItems.slice(startIdx, endIdx).forEach(item => cells.push(item));
-    if (showNext) cells.push('▶');
-    while (cells.length < SLOTS) cells.push(null);
-
-    cells.slice(0, SLOTS).forEach((cell, idx) => {
-      if (cell === '▶') {
-        grid.appendChild(createMenuNavButton('▶', () => { menuPage++; renderMenus(false); }));
-      } else if (cell === '◀') {
-        grid.appendChild(createMenuNavButton('◀', () => { menuPage--; renderMenus(false); }));
-      } else if (isBlankCell(cell)) {
-        grid.appendChild(createBlankMenuButton(idx));
-      } else {
-        grid.appendChild(createMenuItemButton(cell, startIdx + idx - (showPrev ? 1 : 0)));
-      }
-    });
+    btn.classList.add('blank');
   }
+
+  // 실시간 연타 카운터 배지 DOM 동적 생성 및 바인딩
+  const badge = document.createElement('div');
+  badge.className = 'click-badge';
+  btn.appendChild(badge);
+
+  // 5연타 제어 엔진 가동
+  setupFiveClickEvent(btn, badge,
+    () => openEditModal(item, index),
+    () => { if (item) handleClick(item, btn); }
+  );
+
+  return btn;
 }
 
 // 클릭 유효성 판단 (줄바꿈(\n)과 공백을 모두 제거한 후 내부값 비교)
@@ -880,14 +858,13 @@ function flash(btn, ok) {
 // MODAL POPUP DIALOG LOGIC (수정 모달 로직)
 // ============================================================
 function openEditModal(item, idx) {
-  if (quizMode) return; // 퀴즈 가드
+  if (quizMode) return; 
 
   activeEditIndex = idx;
   const modal = document.getElementById('editModal');
   const nameInput = document.getElementById('modalNameInput');
   const priceInput = document.getElementById('modalPriceInput');
 
-  // 모달 입력 칸 초기 세팅 (실제 엔터 개행 적용)
   nameInput.value = item ? item.n : '';
   priceInput.value = item && item.p != null ? item.p : '';
 
@@ -910,14 +887,13 @@ function saveEditModal() {
   let finalPrice = priceVal.trim() === '' || priceVal.toLowerCase() === 'null' ? null : parseInt(priceVal.replace(/[^0-9]/g, ''), 10);
   if (isNaN(finalPrice)) finalPrice = null;
 
-  // 값 갱신
   if (finalName.trim() === '' && finalPrice === null) {
     MENUS[currentCat][menuPage][activeEditIndex] = null;
   } else {
     MENUS[currentCat][menuPage][activeEditIndex] = { n: finalName, p: finalPrice };
   }
 
-  saveMenusToStorage(); // 로컬 세이브
+  saveMenusToStorage();
   closeEditModal();
   renderMenus(false);
 }
