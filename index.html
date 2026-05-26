@@ -54,6 +54,24 @@
   }
   .quiz-prompt.show { display: block; }
 
+  .quiz-result-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
+  }
+  .quiz-result-box {
+    background: white; border-radius: 12px; padding: 32px 28px;
+    text-align: center; min-width: 260px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .quiz-result-box .result-emoji { font-size: 52px; margin-bottom: 10px; }
+  .quiz-result-box .result-score { font-size: 20px; font-weight: bold; color: #222; margin-bottom: 6px; }
+  .quiz-result-box .result-msg { font-size: 15px; color: #555; margin-bottom: 22px; line-height: 1.5; }
+  .quiz-result-box .result-detail { font-size: 13px; color: #888; margin-bottom: 22px; }
+  .quiz-result-box button {
+    padding: 10px 32px; background: #cc0000; color: white;
+    border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer;
+  }
+  .quiz-result-box button:active { background: #aa0000; }
+
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #c8c8c8; }
 
   .cat-area { background: #d0d0d0; padding: 4px 4px 0; flex-shrink: 0; }
@@ -157,6 +175,16 @@
 </div>
 <div class="quiz-prompt" id="quizPrompt">
   <span id="quizQuestion">—</span>
+</div>
+
+<div class="quiz-result-overlay" id="quizResultOverlay" style="display:none">
+  <div class="quiz-result-box">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="result-detail" id="resultDetail"></div>
+    <button onclick="closeQuizResult()">확인</button>
+  </div>
 </div>
 
 <div class="main">
@@ -673,7 +701,7 @@ function toggleQuiz() {
   const prompt = document.getElementById('quizPrompt');
   if (quizMode) {
     quizCorrect = 0; quizWrong = 0;
-    btn.textContent = '퀴즈 종료';
+    btn.textContent = '퀴즈 완료';
     prompt.classList.add('show');
     updateScore();
     nextQuiz();
@@ -682,8 +710,31 @@ function toggleQuiz() {
     prompt.classList.remove('show');
     quizTarget = null;
     updateScore();
+    showQuizResult();
   }
   renderMenus(false);
+}
+
+function showQuizResult() {
+  const total = quizCorrect + quizWrong;
+  if (total === 0) return;
+  const pct = quizCorrect / total;
+  let emoji, msg;
+  if (pct === 1)       { emoji = '👑'; msg = '완벽해요!\n모든 메뉴 위치를 정확히 알고 계시네요!'; }
+  else if (pct >= 0.8) { emoji = '🎉'; msg = '훌륭해요!\n거의 다 맞추셨어요!'; }
+  else if (pct >= 0.6) { emoji = '👍'; msg = '잘 하셨어요!\n조금만 더 연습하면 완벽해질 거예요.'; }
+  else if (pct >= 0.4) { emoji = '💪'; msg = '아직 헷갈리는 메뉴가 있네요.\n한 번 더 도전해 보세요!'; }
+  else                 { emoji = '🔥'; msg = '처음부터 차근차근\n다시 도전해봐요!'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultScore').textContent = `${total}개 중 ${quizCorrect}개 정답`;
+  document.getElementById('resultMsg').innerHTML = msg.replace('\n', '<br>');
+  document.getElementById('resultDetail').textContent = `정답 ${quizCorrect}개 · 오답 ${quizWrong}개`;
+  document.getElementById('quizResultOverlay').style.display = 'flex';
+}
+
+function closeQuizResult() {
+  document.getElementById('quizResultOverlay').style.display = 'none';
 }
 
 function nextQuiz() {
