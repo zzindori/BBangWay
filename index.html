@@ -111,7 +111,10 @@
   }
   .menu-btn.blank { background: white; border: 1px solid #c0c0c0; }
   .menu-btn:active { background: #cce0ff; border-color: #66a; }
-  .menu-btn .price { color: #555; font-size: 2.8vw; }
+  .menu-btn .price {
+    position: absolute; bottom: 2px; left: 0; right: 0;
+    text-align: center; color: #555; font-size: 2.8vw;
+  }
   .menu-btn.flash-correct { background: #4caf50 !important; color: white; }
   .menu-btn.flash-wrong   { background: #f44336 !important; color: white; }
   .menu-btn.flash { background: #ffe0b0 !important; border-color: #ff8800 !important; }
