@@ -45,13 +45,7 @@
     padding: 5px 14px; border: none; background: #ffd700;
     color: #333; font-size: 12px; font-weight: bold; cursor: pointer; border-radius: 3px;
   }
-  .btn-export-data {
-    padding: 5px 10px; border: 1px solid #555; background: #4caf50;
-    color: white; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 3px;
-  }
-  .btn-export-data:active { background: #388e3c; }
-
-  .quiz-score { font-weight: bold; color: #cc0000; font-size: 12px; align-self: center; }
+.quiz-score { font-weight: bold; color: #cc0000; font-size: 12px; align-self: center; }
 
   .quiz-prompt {
     background: #fff8dc; border-top: 2px solid #ffd700;
@@ -158,7 +152,6 @@
 <div class="topbar">
   <div class="topbar-left">
     <button class="btn-quiz-toggle" id="quizToggle" onclick="toggleQuiz()">퀴즈 시작</button>
-    <button class="btn-export-data" onclick="exportMenusToKakao()">📤 데이터 내보내기</button>
   </div>
   <span class="quiz-score" id="quizScore"></span>
 </div>
@@ -399,31 +392,6 @@ function isBlankCell(cell) {
 }
 
 // ============================================================
-// 데이터 내보내기
-// ============================================================
-function exportMenusToKakao() {
-  try {
-    const exportPackage = { TAB_LAYOUT: TAB_PAGES, MENU_DATA: MENUS };
-    const dataStr = JSON.stringify(exportPackage, null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(dataStr).then(() => {
-        alert('📤 포스기 메뉴 및 카테고리 데이터가 일괄 복사되었습니다!\n\n카카오톡을 열고 개발자님에게 [붙여넣기]해서 전송해 주세요.');
-      });
-    } else {
-      const textArea = document.createElement('textarea');
-      textArea.value = dataStr;
-      textArea.style.position = 'fixed';
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('📤 포스기 메뉴 및 카테고리 데이터가 일괄 복사되었습니다!\n\n카카오톡을 열고 개발자님에게 [붙여넣기]해서 전송해 주세요.');
-    }
-  } catch (err) {
-    alert('데이터 추출 중 오류가 발생했습니다.');
-  }
-}
-
 // ============================================================
 // 길게 누르기 (Long Press) 제어 엔진
 // ============================================================
