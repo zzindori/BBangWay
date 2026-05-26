@@ -276,8 +276,7 @@ let activeCatRow = null;
 let activeCatCol = null;
 
 // ============================================================
-// 데이터 로드 (Supabase → localStorage → data.json 순서)
-// data.json은 Supabase에 데이터가 없을 때만 최초 시드로 사용
+// 데이터 로드 (Supabase → localStorage 순서)
 // ============================================================
 async function loadData() {
   // 1. Supabase 시도
@@ -311,13 +310,6 @@ async function loadData() {
       return;
     } catch (e) {}
   }
-
-  // 3. data.json 최초 시드 (Supabase가 완전히 비어있을 때만)
-  const res = await fetch('./data.json', { cache: 'no-store' });
-  const defaults = await res.json();
-  TAB_PAGES = defaults.tab_pages;
-  MENUS = defaults.menu_data;
-  await saveToSupabase();
 }
 
 // ============================================================
@@ -444,6 +436,25 @@ function setupLongPressEvent(btn, onLongPress, onSingleClick) {
 // ============================================================
 // RENDER TABS
 // ============================================================
+function selectFirstCat() {
+  const page = TAB_PAGES[currentPage];
+  for (const row of page) {
+    for (const label of row) {
+      if (label && label !== '▶' && label !== '◀') {
+        const key = normCat(label);
+        if (MENUS[key]) {
+          currentCat = key;
+          menuPage = 0;
+          renderTabs();
+          renderMenus(true);
+          return;
+        }
+      }
+    }
+  }
+  renderTabs();
+}
+
 function renderTabs() {
   for (let r = 0; r < 3; r++) {
     const rowEl = document.getElementById('tabRow' + r);
@@ -455,7 +466,7 @@ function renderTabs() {
         const btn = document.createElement('button');
         btn.className = 'cat-nav';
         btn.textContent = '▶';
-        btn.onclick = () => { currentPage = 1; renderTabs(); };
+        btn.onclick = () => { currentPage = 1; selectFirstCat(); };
         rowEl.appendChild(btn);
         return;
       }
@@ -463,7 +474,7 @@ function renderTabs() {
         const btn = document.createElement('button');
         btn.className = 'cat-nav';
         btn.textContent = '◀';
-        btn.onclick = () => { currentPage = 0; renderTabs(); };
+        btn.onclick = () => { currentPage = 0; selectFirstCat(); };
         rowEl.appendChild(btn);
         return;
       }
