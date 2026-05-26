@@ -283,7 +283,7 @@ async function loadData() {
   let jsonDefaults = null;
   let jsonVersion = 0;
   try {
-    const res = await fetch('./data.json');
+    const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
     jsonDefaults = await res.json();
     jsonVersion = jsonDefaults.data_version || 0;
   } catch (e) {}
