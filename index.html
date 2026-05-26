@@ -276,42 +276,24 @@ let activeCatRow = null;
 let activeCatCol = null;
 
 // ============================================================
-// 데이터 로드 (버전 비교: data.json 버전 > Supabase 버전이면 data.json 우선)
+// 데이터 로드 (Supabase → localStorage → data.json 순서)
+// data.json은 Supabase에 데이터가 없을 때만 최초 시드로 사용
 // ============================================================
 async function loadData() {
-  // data.json 항상 먼저 가져와서 버전 확인
-  let jsonDefaults = null;
-  let jsonVersion = 0;
-  try {
-    const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
-    jsonDefaults = await res.json();
-    jsonVersion = jsonDefaults.data_version || 0;
-  } catch (e) {}
-
   // 1. Supabase 시도
   if (supabaseClient) {
     try {
       const { data, error } = await supabaseClient
         .from('pos_data')
-        .select('tab_pages, menu_data, data_version')
+        .select('tab_pages, menu_data')
         .eq('id', 1)
         .maybeSingle();
 
       if (!error && data) {
-        const supabaseVersion = data.data_version || 0;
-        if (jsonVersion > supabaseVersion && jsonDefaults) {
-          // data.json이 더 새로움 → data.json 적용 후 Supabase 업데이트
-          console.log(`data.json v${jsonVersion} > Supabase v${supabaseVersion} → data.json 적용`);
-          TAB_PAGES = jsonDefaults.tab_pages;
-          MENUS = jsonDefaults.menu_data;
-          await saveToSupabase(jsonVersion);
-        } else {
-          TAB_PAGES = data.tab_pages;
-          MENUS = data.menu_data;
-        }
+        TAB_PAGES = data.tab_pages;
+        MENUS = data.menu_data;
         localStorage.setItem('POS_USER_TABS', JSON.stringify(TAB_PAGES));
         localStorage.setItem('POS_USER_MENUS', JSON.stringify(MENUS));
-        localStorage.setItem('POS_DATA_VERSION', String(Math.max(jsonVersion, supabaseVersion)));
         return;
       }
     } catch (e) {
@@ -319,11 +301,10 @@ async function loadData() {
     }
   }
 
-  // 2. localStorage 캐시 사용 (버전 비교)
-  const cachedVersion = parseInt(localStorage.getItem('POS_DATA_VERSION') || '0');
+  // 2. localStorage 캐시 사용
   const cachedTabs = localStorage.getItem('POS_USER_TABS');
   const cachedMenus = localStorage.getItem('POS_USER_MENUS');
-  if (cachedTabs && cachedMenus && cachedVersion >= jsonVersion) {
+  if (cachedTabs && cachedMenus) {
     try {
       TAB_PAGES = JSON.parse(cachedTabs);
       MENUS = JSON.parse(cachedMenus);
@@ -331,27 +312,24 @@ async function loadData() {
     } catch (e) {}
   }
 
-  // 3. data.json 기본값 로드
-  if (jsonDefaults) {
-    TAB_PAGES = jsonDefaults.tab_pages;
-    MENUS = jsonDefaults.menu_data;
-    await saveToSupabase(jsonVersion);
-  }
+  // 3. data.json 최초 시드 (Supabase가 완전히 비어있을 때만)
+  const res = await fetch('./data.json', { cache: 'no-store' });
+  const defaults = await res.json();
+  TAB_PAGES = defaults.tab_pages;
+  MENUS = defaults.menu_data;
+  await saveToSupabase();
 }
 
 // ============================================================
 // 데이터 저장
 // ============================================================
-async function saveToSupabase(dataVersion) {
+async function saveToSupabase() {
   if (!supabaseClient) return;
-  const version = dataVersion !== undefined
-    ? dataVersion
-    : parseInt(localStorage.getItem('POS_DATA_VERSION') || '0');
   try {
     isOwnUpdate = true;
     const { error } = await supabaseClient
       .from('pos_data')
-      .upsert({ id: 1, tab_pages: TAB_PAGES, menu_data: MENUS, data_version: version, updated_at: new Date().toISOString() });
+      .upsert({ id: 1, tab_pages: TAB_PAGES, menu_data: MENUS, updated_at: new Date().toISOString() });
     if (error) console.error('Supabase 저장 오류:', error);
     setTimeout(() => { isOwnUpdate = false; }, 1500);
   } catch (e) {
