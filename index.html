@@ -67,9 +67,10 @@
 
   .cat-btn {
     position: relative; padding: 5px 3px; border: 1px solid #bbb;
-    background: #e6e6e6; font-size: 11px; cursor: pointer; border-radius: 2px;
+    background: #e6e6e6; font-size: 3.6vw; cursor: pointer; border-radius: 2px;
     text-align: center; line-height: 1.3; min-height: 34px;
     display: flex; align-items: center; justify-content: center; word-break: keep-all;
+    overflow: hidden;
   }
   .cat-btn.active { background: white; border: 2px solid #cc0000; font-weight: bold; }
   .cat-btn:active { background: #cce0ff; }
@@ -91,14 +92,14 @@
 
   .menu-btn {
     position: relative; background: white; border: 1px solid #c0c0c0;
-    padding: 2px 2px; font-size: 10.5px; cursor: pointer; border-radius: 2px;
-    text-align: center; line-height: 1.2; height: 100%;
+    padding: 2px 1px; font-size: 3.6vw; cursor: pointer; border-radius: 2px;
+    text-align: center; line-height: 1.25; height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 1px; word-break: keep-all;
+    gap: 1px; word-break: keep-all; overflow: hidden;
   }
   .menu-btn.blank { background: white; border: 1px solid #c0c0c0; }
   .menu-btn:active { background: #cce0ff; border-color: #66a; }
-  .menu-btn .price { color: #555; font-size: 9px; }
+  .menu-btn .price { color: #555; font-size: 2.8vw; }
   .menu-btn.flash-correct { background: #4caf50 !important; color: white; }
   .menu-btn.flash-wrong   { background: #f44336 !important; color: white; }
   .menu-btn.flash { background: #ffe0b0 !important; border-color: #ff8800 !important; }
