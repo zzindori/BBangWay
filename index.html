@@ -690,9 +690,10 @@ function openBreadForm(breadId) {
   document.getElementById('photoCamera').value           = '';
   document.getElementById('photoGallery').value          = '';
 
+  const defaultCat = bread ? bread.category_id : filterCatId;
   const sel = document.getElementById('fieldCat');
   sel.innerHTML = '<option value="">카테고리 없음</option>' +
-    categories.map(c => `<option value="${c.id}"${bread?.category_id === c.id ? ' selected' : ''}>${c.name}</option>`).join('');
+    categories.map(c => `<option value="${c.id}"${defaultCat === c.id ? ' selected' : ''}>${c.name}</option>`).join('');
 
   if (bread?.bread_photos?.length) {
     existingPhotos = bread.bread_photos.map(p => ({ id: p.id, url: p.photo_url }));
