@@ -1,7 +1,7 @@
 {
   "name": "BBangWay",
   "short_name": "BBangWay",
-  "description": "베이커리 POS 연습 앱",
+  "description": "베이커리 빵 인식 앱 관리자",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,21 +10,21 @@
   "theme_color": "#cc0000",
   "icons": [
     {
-      "src": "icon-192.svg",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.svg",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-maskable.svg",
+      "src": "icon-maskable.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
