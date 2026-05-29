@@ -11,6 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BBangWay">
 <link rel="manifest" href="manifest.json">
+<script>window.GEMINI_KEY = '';</script>
+<script src="gemini-config.js" onerror="console.log('gemini-config.js not found')"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -236,6 +238,21 @@ input[type=file] { display: none; }
 .btn-qopt.wrong   { background: #f44336 !important; border-color: #f44336 !important; color: white !important; }
 .btn-qopt.reveal  { background: #e8f5e9 !important; border-color: #4caf50 !important; }
 
+/* Recognition */
+#empRecognizeView   { flex: 1; display: none; flex-direction: column; padding: 12px; gap: 10px; overflow: hidden; }
+.recog-preview      { flex: 1; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; min-height: 0; }
+.recog-preview img  { width: 100%; height: 100%; object-fit: cover; display: block; }
+.recog-placeholder  { font-size: 52px; color: #ddd; }
+.recog-result       { background: white; border-radius: 12px; padding: 14px 16px; flex-shrink: 0; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+.recog-result.loading { align-items: center; color: #aaa; font-size: 13px; }
+.recog-bread-name   { font-size: 20px; font-weight: bold; color: #222; margin-bottom: 4px; }
+.recog-bread-price  { font-size: 16px; font-weight: bold; color: #cc0000; margin-bottom: 6px; }
+.recog-bread-desc   { font-size: 13px; color: #666; line-height: 1.6; }
+.recog-no-match     { font-size: 14px; color: #aaa; text-align: center; }
+.recog-btns         { flex-shrink: 0; }
+.btn-recog-camera   { width: 100%; padding: 16px; background: #cc0000; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
+.btn-recog-camera:active { background: #aa0000; }
+
 /* QR box in admin */
 .qr-box       { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0 4px; }
 .qr-canvas    { border-radius: 8px; }
@@ -354,8 +371,9 @@ input[type=file] { display: none; }
   <div class="emp-header">
     <div class="emp-store" id="empStoreName"></div>
     <div class="emp-tabs">
-      <button class="emp-tab active" id="empTabLearn" onclick="switchEmpMode('learn')">📖 학습</button>
-      <button class="emp-tab"        id="empTabQuiz"  onclick="switchEmpMode('quiz')">🎯 퀴즈</button>
+      <button class="emp-tab active" id="empTabLearn"      onclick="switchEmpMode('learn')">📖 학습</button>
+      <button class="emp-tab"        id="empTabQuiz"       onclick="switchEmpMode('quiz')">🎯 퀴즈</button>
+      <button class="emp-tab"        id="empTabRecognize"  onclick="switchEmpMode('recognize')">📷 인식</button>
     </div>
   </div>
 
@@ -380,6 +398,18 @@ input[type=file] { display: none; }
     </div>
     <div class="quiz-img-box" id="qImgBox"></div>
     <div class="quiz-opts"    id="qOpts"></div>
+  </div>
+
+  <!-- 인식 모드 -->
+  <div id="empRecognizeView">
+    <div class="recog-preview" id="recogPreview">
+      <span class="recog-placeholder">📷</span>
+    </div>
+    <div class="recog-result" id="recogResult"></div>
+    <div class="recog-btns">
+      <button class="btn-recog-camera" onclick="document.getElementById('recogInput').click()">📷 빵 찍기</button>
+      <input type="file" id="recogInput" accept="image/*" capture="environment" onchange="handleRecogPhoto(this.files[0])">
+    </div>
   </div>
 </div>
 
@@ -978,10 +1008,12 @@ async function loadEmployeeScreen(code) {
 }
 
 function switchEmpMode(mode) {
-  document.getElementById('empTabLearn').classList.toggle('active', mode === 'learn');
-  document.getElementById('empTabQuiz').classList.toggle('active',  mode === 'quiz');
-  document.getElementById('empLearnView').style.display = mode === 'learn' ? 'flex' : 'none';
-  document.getElementById('empQuizView').style.display  = mode === 'quiz'  ? 'flex' : 'none';
+  ['learn','quiz','recognize'].forEach(m => {
+    document.getElementById('empTab' + m.charAt(0).toUpperCase() + m.slice(1)).classList.toggle('active', m === mode);
+  });
+  document.getElementById('empLearnView').style.display     = mode === 'learn'     ? 'flex' : 'none';
+  document.getElementById('empQuizView').style.display      = mode === 'quiz'      ? 'flex' : 'none';
+  document.getElementById('empRecognizeView').style.display = mode === 'recognize' ? 'flex' : 'none';
   if (mode === 'quiz') startQuiz();
 }
 
@@ -1109,6 +1141,77 @@ function handleAnswer(selectedId, correctId) {
 
   updateQuizScore();
   setTimeout(nextQuestion, 1400);
+}
+
+// ── BREAD RECOGNITION ─────────────────────────────────────────
+async function handleRecogPhoto(file) {
+  if (!file) return;
+  document.getElementById('recogInput').value = '';
+
+  // 미리보기
+  const previewUrl = URL.createObjectURL(file);
+  document.getElementById('recogPreview').innerHTML = `<img src="${previewUrl}">`;
+
+  // 결과창 로딩
+  const resultEl = document.getElementById('recogResult');
+  resultEl.className = 'recog-result loading';
+  resultEl.innerHTML = '🔍 인식 중...';
+
+  if (!window.GEMINI_KEY) {
+    resultEl.className = 'recog-result';
+    resultEl.innerHTML = '<div class="recog-no-match">API 키가 설정되지 않았습니다</div>';
+    return;
+  }
+
+  try {
+    const base64 = await fileToBase64(file);
+    const mimeType = file.type || 'image/jpeg';
+    const breadNames = empBreads.map(b => b.name).join(', ');
+    const prompt = `이 베이커리의 빵 목록: ${breadNames}\n\n사진 속 빵이 위 목록 중 어느 것인지 이름만 정확히 답해줘. 반드시 목록에 있는 이름 중 하나만 답해. 확신할 수 없으면 "모름"이라고만 해.`;
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [
+            { text: prompt },
+            { inline_data: { mime_type: mimeType, data: base64 } }
+          ]}]
+        })
+      }
+    );
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '모름';
+    const matched = empBreads.find(b => answer.includes(b.name));
+
+    resultEl.className = 'recog-result';
+    if (matched) {
+      const price = matched.price != null ? matched.price.toLocaleString() + '원' : '';
+      resultEl.innerHTML =
+        `<div class="recog-bread-name">${matched.name}</div>` +
+        (price ? `<div class="recog-bread-price">${price}</div>` : '') +
+        (matched.description ? `<div class="recog-bread-desc">${matched.description}</div>` : '');
+    } else {
+      resultEl.innerHTML = `<div class="recog-no-match">인식하지 못했습니다<br><small style="color:#ccc">${answer}</small></div>`;
+    }
+  } catch (e) {
+    resultEl.className = 'recog-result';
+    resultEl.innerHTML = `<div class="recog-no-match">오류: ${e.message}</div>`;
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 // ── START ──────────────────────────────────────────────────────

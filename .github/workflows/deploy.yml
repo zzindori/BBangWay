@@ -22,6 +22,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Inject Gemini API key
+        run: echo "window.GEMINI_KEY='${{ secrets.GEMINI_KEY }}';" > gemini-config.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
