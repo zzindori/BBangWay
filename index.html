@@ -160,8 +160,9 @@ body {
 .photo-wrap { position: relative; flex-shrink: 0; }
 .photo-wrap img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; display: block; }
 .btn-photo-rm { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: #f44336; color: white; border: none; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.btn-add-photo { width: 80px; height: 80px; border-radius: 8px; border: 2px dashed #ddd; background: white; font-size: 22px; color: #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.btn-add-photo:active { background: #f5f5f5; }
+.btn-photo-source { flex: 1; padding: 10px; background: white; border: 1.5px solid #ddd; border-radius: 8px; font-size: 13px; color: #555; cursor: pointer; }
+.btn-photo-source:active { background: #f5f5f5; }
+.photo-btns { display: flex; gap: 8px; margin-bottom: 10px; }
 
 /* Glb button */
 .btn-glb { width: 100%; padding: 12px; background: white; border: 1.5px solid #ddd; border-radius: 8px; font-size: 13px; color: #555; cursor: pointer; text-align: left; }
@@ -310,10 +311,13 @@ input[type=file] { display: none; }
   <div class="form-scroll">
     <div class="form-group">
       <label class="form-label">사진</label>
-      <div class="photo-strip" id="photoStrip">
-        <button class="btn-add-photo" onclick="document.getElementById('photoInput').click()">📷</button>
+      <div class="photo-btns">
+        <button class="btn-photo-source" onclick="document.getElementById('photoCamera').click()">📷 카메라 촬영</button>
+        <button class="btn-photo-source" onclick="document.getElementById('photoGallery').click()">🖼️ 갤러리 선택</button>
       </div>
-      <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotoInput(this.files)">
+      <div class="photo-strip" id="photoStrip"></div>
+      <input type="file" id="photoCamera"  accept="image/*" capture="environment" onchange="handlePhotoInput(this.files)">
+      <input type="file" id="photoGallery" accept="image/*" multiple            onchange="handlePhotoInput(this.files)">
     </div>
     <div class="form-group">
       <label class="form-label req">빵 이름</label>
@@ -683,7 +687,8 @@ function openBreadForm(breadId) {
   document.getElementById('fieldDesc').value             = bread?.description || '';
   document.getElementById('glbBtn').textContent          = bread?.glb_url ? '📦 파일 변경' : '📦 파일 선택';
   document.getElementById('btnDelete').style.display     = bread ? '' : 'none';
-  document.getElementById('photoInput').value            = '';
+  document.getElementById('photoCamera').value           = '';
+  document.getElementById('photoGallery').value          = '';
 
   const sel = document.getElementById('fieldCat');
   sel.innerHTML = '<option value="">카테고리 없음</option>' +
@@ -709,7 +714,8 @@ function handlePhotoInput(files) {
     pendingPhotos.push({ file, preview: URL.createObjectURL(file) });
   });
   renderPhotoStrip();
-  document.getElementById('photoInput').value = '';
+  document.getElementById('photoCamera').value  = '';
+  document.getElementById('photoGallery').value = '';
 }
 
 function renderPhotoStrip() {
@@ -725,8 +731,7 @@ function renderPhotoStrip() {
       <div class="photo-wrap">
         <img src="${p.preview}" alt="">
         <button class="btn-photo-rm" onclick="rmPendingPhoto(${i})">✕</button>
-      </div>`).join('') +
-    `<button class="btn-add-photo" onclick="document.getElementById('photoInput').click()">📷</button>`;
+      </div>`).join('');
 }
 
 function rmExistingPhoto(photoId) { deletedPhotoIds.push(photoId); renderPhotoStrip(); }
