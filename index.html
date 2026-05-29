@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BBangWay">
 <link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -193,6 +194,54 @@ body {
 
 input[type=file] { display: none; }
 ::-webkit-scrollbar { width: 0; }
+
+/* ── Employee Screen ── */
+#empScreen { flex: 1; display: none; flex-direction: column; overflow: hidden; background: #f5f5f5; }
+.emp-header { background: #cc0000; padding: 12px 14px 10px; flex-shrink: 0; }
+.emp-store  { font-size: 15px; font-weight: bold; color: white; margin-bottom: 8px; }
+.emp-tabs   { display: flex; gap: 6px; }
+.emp-tab    { flex: 1; padding: 8px; border: 1.5px solid rgba(255,255,255,.4); background: transparent; color: white; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+.emp-tab.active { background: white; color: #cc0000; border-color: white; }
+
+/* Learning */
+#empLearnView { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.emp-cat-bar  { display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px 6px; flex-shrink: 0; }
+.emp-cat-bar::-webkit-scrollbar { display: none; }
+.learn-wrap   { flex: 1; padding: 0 12px 8px; min-height: 0; display: flex; flex-direction: column; }
+.learn-card   { flex: 1; background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+.learn-photo  { width: 100%; flex-shrink: 0; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 52px; overflow: hidden; height: 42vw; max-height: 240px; }
+.learn-photo img  { width: 100%; height: 100%; object-fit: cover; display: block; }
+.learn-info   { flex: 1; padding: 16px; overflow-y: auto; }
+.learn-name   { font-size: 22px; font-weight: bold; color: #222; margin-bottom: 6px; }
+.learn-price  { font-size: 18px; font-weight: bold; color: #cc0000; margin-bottom: 6px; }
+.learn-cat    { font-size: 12px; color: #bbb; margin-bottom: 10px; background: #f5f5f5; display: inline-block; padding: 2px 8px; border-radius: 10px; }
+.learn-desc   { font-size: 14px; color: #555; line-height: 1.7; }
+.learn-nav    { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px 12px; flex-shrink: 0; }
+.btn-ln       { width: 44px; height: 44px; border-radius: 50%; background: #cc0000; color: white; border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.btn-ln:active   { background: #aa0000; }
+.btn-ln:disabled { background: #e0e0e0; cursor: default; }
+.learn-prog   { font-size: 13px; color: #999; font-weight: bold; }
+
+/* Quiz */
+#empQuizView  { flex: 1; display: none; flex-direction: column; padding: 10px 12px 12px; gap: 8px; overflow: hidden; }
+.quiz-top     { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.quiz-score-txt  { font-size: 13px; font-weight: bold; color: #555; }
+.quiz-streak-txt { font-size: 14px; font-weight: bold; color: #ff8800; }
+.quiz-img-box { flex: 1; background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.1); display: flex; align-items: center; justify-content: center; font-size: 52px; overflow: hidden; min-height: 0; }
+.quiz-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quiz-opts    { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+.btn-qopt     { padding: 14px 6px; background: white; border: 2px solid #e8e8e8; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; color: #333; line-height: 1.3; text-align: center; }
+.btn-qopt:active  { background: #f5f5f5; }
+.btn-qopt.correct { background: #4caf50 !important; border-color: #4caf50 !important; color: white !important; }
+.btn-qopt.wrong   { background: #f44336 !important; border-color: #f44336 !important; color: white !important; }
+.btn-qopt.reveal  { background: #e8f5e9 !important; border-color: #4caf50 !important; }
+
+/* QR box in admin */
+.qr-box       { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0 4px; }
+.qr-canvas    { border-radius: 8px; }
+.qr-url       { font-size: 11px; color: #aaa; text-align: center; word-break: break-all; }
+.btn-copy-link { width: 100%; padding: 10px; background: #f0f0f0; border: none; border-radius: 8px; font-size: 13px; color: #555; cursor: pointer; font-weight: bold; margin-top: 4px; }
+.btn-copy-link:active { background: #e0e0e0; }
 </style>
 </head>
 <body>
@@ -278,10 +327,11 @@ input[type=file] { display: none; }
       <button class="btn-primary" onclick="saveStoreSettings()">저장</button>
     </div>
     <div class="settings-card">
-      <div class="settings-card-title">가게 코드</div>
-      <div class="code-box">
-        <div class="code-text" id="storeCode"></div>
-        <div class="code-sub">손님 접속 링크에 사용됩니다 (2단계에서 활성화)</div>
+      <div class="settings-card-title">직원 접속 QR</div>
+      <div class="qr-box">
+        <div id="qrCanvas" class="qr-canvas"></div>
+        <div class="qr-url" id="qrUrl"></div>
+        <button class="btn-copy-link" onclick="copyEmpLink()">🔗 링크 복사</button>
       </div>
     </div>
   </div>
@@ -296,6 +346,40 @@ input[type=file] { display: none; }
     <button class="nav-btn"        id="navStore"       onclick="switchView('Store')">
       <span class="nav-icon">⚙️</span><span>가게 설정</span>
     </button>
+  </div>
+</div>
+
+<!-- Employee Screen -->
+<div id="empScreen">
+  <div class="emp-header">
+    <div class="emp-store" id="empStoreName"></div>
+    <div class="emp-tabs">
+      <button class="emp-tab active" id="empTabLearn" onclick="switchEmpMode('learn')">📖 학습</button>
+      <button class="emp-tab"        id="empTabQuiz"  onclick="switchEmpMode('quiz')">🎯 퀴즈</button>
+    </div>
+  </div>
+
+  <!-- 학습 모드 -->
+  <div id="empLearnView">
+    <div class="emp-cat-bar" id="empCatBar"></div>
+    <div class="learn-wrap">
+      <div class="learn-card" id="learnCard"></div>
+    </div>
+    <div class="learn-nav">
+      <button class="btn-ln" id="btnLearnPrev" onclick="learnMove(-1)">◀</button>
+      <span class="learn-prog" id="learnProg"></span>
+      <button class="btn-ln" id="btnLearnNext" onclick="learnMove(1)">▶</button>
+    </div>
+  </div>
+
+  <!-- 퀴즈 모드 -->
+  <div id="empQuizView">
+    <div class="quiz-top">
+      <span class="quiz-score-txt"  id="qScoreTxt">정답 0 / 오답 0</span>
+      <span class="quiz-streak-txt" id="qStreakTxt">🔥 0연속</span>
+    </div>
+    <div class="quiz-img-box" id="qImgBox"></div>
+    <div class="quiz-opts"    id="qOpts"></div>
   </div>
 </div>
 
@@ -391,6 +475,9 @@ let editingCatId = null;
 
 // ── INIT ───────────────────────────────────────────────────────
 async function init() {
+  const storeCode = new URLSearchParams(location.search).get('store');
+  if (storeCode) { await loadEmployeeScreen(storeCode); return; }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) { currentUser = session.user; await afterLogin(); }
   else         { showScreen('auth'); }
@@ -419,6 +506,7 @@ function showScreen(name) {
   document.getElementById('authScreen').style.display = name === 'auth'       ? 'flex' : 'none';
   document.getElementById('storeSetup').style.display = name === 'storeSetup' ? 'flex' : 'none';
   document.getElementById('dashboard').style.display  = name === 'dashboard'  ? 'flex' : 'none';
+  document.getElementById('empScreen').style.display  = name === 'employee'   ? 'flex' : 'none';
   document.getElementById('fab').style.display        = name === 'dashboard'  ? 'flex' : 'none';
 }
 
@@ -426,7 +514,7 @@ function showDashboard() {
   document.getElementById('headerStore').textContent = currentStore.name;
   document.getElementById('settingsName').value      = currentStore.name;
   document.getElementById('settingsDesc').value      = currentStore.description || '';
-  document.getElementById('storeCode').textContent   = currentStore.code;
+  generateQR();
   renderCatFilter();
   renderBreadGrid();
   showScreen('dashboard');
@@ -839,6 +927,188 @@ function showToast(msg, type = '') {
   el.className   = 'show' + (type === 'error' ? ' error' : '');
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.className = ''; }, 2400);
+}
+
+// ── QR / LINK ─────────────────────────────────────────────────
+function empUrl() {
+  return location.origin + location.pathname + '?store=' + currentStore.code;
+}
+
+function generateQR() {
+  const box = document.getElementById('qrCanvas');
+  box.innerHTML = '';
+  new QRCode(box, { text: empUrl(), width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
+  document.getElementById('qrUrl').textContent = empUrl();
+}
+
+async function copyEmpLink() {
+  try { await navigator.clipboard.writeText(empUrl()); showToast('링크 복사됐습니다 ✓'); }
+  catch { showToast('복사 실패 — 직접 선택해주세요', 'error'); }
+}
+
+// ── EMPLOYEE SCREEN ────────────────────────────────────────────
+let empStore      = null;
+let empCategories = [];
+let empBreads     = [];
+let learnList     = [];
+let learnIdx      = 0;
+let learnCatId    = null;
+
+let qCorrect = 0, qWrong = 0, qStreak = 0;
+let qAnswering = false;
+
+async function loadEmployeeScreen(code) {
+  const { data: store } = await sb.from('stores').select('*').eq('code', code).maybeSingle();
+  if (!store) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">가게를 찾을 수 없습니다</div>'; return; }
+  empStore = store;
+
+  const [{ data: cats }, { data: brs }] = await Promise.all([
+    sb.from('categories').select('*').eq('store_id', store.id).order('sort_order'),
+    sb.from('breads').select('*, bread_photos(id,photo_url)').eq('store_id', store.id).order('created_at'),
+  ]);
+  empCategories = cats || [];
+  empBreads     = brs  || [];
+
+  document.getElementById('empStoreName').textContent = store.name;
+  document.title = store.name + ' — BBangWay';
+  buildLearnList();
+  renderEmpCatBar();
+  renderLearnCard();
+  showScreen('employee');
+}
+
+function switchEmpMode(mode) {
+  document.getElementById('empTabLearn').classList.toggle('active', mode === 'learn');
+  document.getElementById('empTabQuiz').classList.toggle('active',  mode === 'quiz');
+  document.getElementById('empLearnView').style.display = mode === 'learn' ? 'flex' : 'none';
+  document.getElementById('empQuizView').style.display  = mode === 'quiz'  ? 'flex' : 'none';
+  if (mode === 'quiz') startQuiz();
+}
+
+// ── LEARNING ───────────────────────────────────────────────────
+function buildLearnList() {
+  learnList = learnCatId
+    ? empBreads.filter(b => b.category_id === learnCatId)
+    : empBreads;
+  learnIdx = 0;
+}
+
+function renderEmpCatBar() {
+  document.getElementById('empCatBar').innerHTML =
+    `<button class="cat-chip ${learnCatId === null ? 'active' : ''}" onclick="setLearnCat(null)">전체</button>` +
+    empCategories.map(c =>
+      `<button class="cat-chip ${learnCatId === c.id ? 'active' : ''}" onclick="setLearnCat('${c.id}')">${c.name}</button>`
+    ).join('');
+}
+
+function setLearnCat(catId) {
+  learnCatId = catId;
+  buildLearnList();
+  renderEmpCatBar();
+  renderLearnCard();
+}
+
+function learnMove(dir) {
+  learnIdx = Math.max(0, Math.min(learnList.length - 1, learnIdx + dir));
+  renderLearnCard();
+}
+
+function renderLearnCard() {
+  const card = document.getElementById('learnCard');
+  const prev = document.getElementById('btnLearnPrev');
+  const next = document.getElementById('btnLearnNext');
+  const prog = document.getElementById('learnProg');
+
+  if (!learnList.length) {
+    card.innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:14px">등록된 빵이 없습니다</div>';
+    prog.textContent = '0 / 0';
+    prev.disabled = true; next.disabled = true;
+    return;
+  }
+
+  const b       = learnList[learnIdx];
+  const photo   = b.bread_photos?.[0]?.photo_url;
+  const catName = empCategories.find(c => c.id === b.category_id)?.name || '';
+  const price   = b.price != null ? b.price.toLocaleString() + '원' : '';
+
+  card.innerHTML = `
+    <div class="learn-photo">${photo ? `<img src="${photo}">` : '🥐'}</div>
+    <div class="learn-info">
+      <div class="learn-name">${b.name}</div>
+      ${price   ? `<div class="learn-price">${price}</div>` : ''}
+      ${catName ? `<div class="learn-cat">${catName}</div>` : ''}
+      ${b.description ? `<div class="learn-desc">${b.description}</div>` : ''}
+    </div>`;
+
+  prog.textContent  = `${learnIdx + 1} / ${learnList.length}`;
+  prev.disabled     = learnIdx === 0;
+  next.disabled     = learnIdx === learnList.length - 1;
+}
+
+// ── QUIZ ───────────────────────────────────────────────────────
+let quizPool = [];
+
+function startQuiz() {
+  quizPool = empBreads.filter(b => b.bread_photos?.length > 0);
+  qCorrect = 0; qWrong = 0; qStreak = 0; qAnswering = false;
+  updateQuizScore();
+  nextQuestion();
+}
+
+function updateQuizScore() {
+  document.getElementById('qScoreTxt').textContent  = `정답 ${qCorrect} / 오답 ${qWrong}`;
+  document.getElementById('qStreakTxt').textContent  = `🔥 ${qStreak}연속`;
+}
+
+function nextQuestion() {
+  if (quizPool.length < 2) {
+    document.getElementById('qImgBox').innerHTML = '<div style="color:#ccc;font-size:13px;padding:20px;text-align:center">사진이 등록된 빵이 2개 이상 필요합니다</div>';
+    document.getElementById('qOpts').innerHTML = '';
+    return;
+  }
+  qAnswering = false;
+
+  const correct = quizPool[Math.floor(Math.random() * quizPool.length)];
+  const photo   = correct.bread_photos[Math.floor(Math.random() * correct.bread_photos.length)].photo_url;
+
+  const wrongs = quizPool.filter(b => b.id !== correct.id)
+    .sort(() => Math.random() - .5).slice(0, 3);
+  const opts = [...wrongs, correct].sort(() => Math.random() - .5);
+
+  document.getElementById('qImgBox').innerHTML = `<img src="${photo}">`;
+  document.getElementById('qOpts').innerHTML = opts.map(b =>
+    `<button class="btn-qopt" onclick="handleAnswer('${b.id}','${correct.id}')">${b.name}</button>`
+  ).join('');
+}
+
+function handleAnswer(selectedId, correctId) {
+  if (qAnswering) return;
+  qAnswering = true;
+
+  const btns = document.querySelectorAll('.btn-qopt');
+  btns.forEach(btn => {
+    btn.onclick = null;
+    const bId = empBreads.find(b => b.name === btn.textContent)?.id;
+    if (bId === correctId && selectedId !== correctId) btn.classList.add('reveal');
+  });
+
+  if (selectedId === correctId) {
+    qCorrect++; qStreak++;
+    btns.forEach(btn => {
+      if (empBreads.find(b => b.name === btn.textContent)?.id === correctId)
+        btn.classList.add('correct');
+    });
+  } else {
+    qWrong++; qStreak = 0;
+    btns.forEach(btn => {
+      const bId = empBreads.find(b => b.name === btn.textContent)?.id;
+      if (bId === selectedId) btn.classList.add('wrong');
+      if (bId === correctId)  btn.classList.add('reveal');
+    });
+  }
+
+  updateQuizScore();
+  setTimeout(nextQuestion, 1400);
 }
 
 // ── START ──────────────────────────────────────────────────────
