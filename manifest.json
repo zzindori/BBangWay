@@ -1,7 +1,7 @@
 {
-  "name": "포스 연습",
-  "short_name": "포스연습",
-  "description": "메뉴 위치 기억 연습용 POS 앱",
+  "name": "BBangWay",
+  "short_name": "BBangWay",
+  "description": "베이커리 POS 연습 앱",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
