@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>은영 포스기 연습</title>
+<title>BBangWay</title>
+<meta name="description" content="베이커리 POS 연습/운영 앱">
+<meta name="theme-color" content="#cc0000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BBangWay">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-512.svg">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 
@@ -239,7 +247,7 @@
 <body>
 
 <div id="loadingOverlay">
-  <div class="loading-title">포스기 로딩 중...</div>
+  <div class="loading-title">🍞 BBangWay</div>
   <div class="loading-sub">데이터를 불러오는 중입니다</div>
 </div>
 
@@ -989,6 +997,14 @@ function closeLeaderboard() { document.getElementById('lbOverlay').style.display
 
 // 시작
 init();
+
+// Service Worker 등록
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .catch((e) => console.warn('SW 등록 실패:', e));
+  });
+}
 </script>
 </body>
 </html>
