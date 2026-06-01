@@ -346,7 +346,7 @@ input[type=file] { display: none; }
 <!-- Loading -->
 <div id="loading">
   <div class="loading-logo">🥐</div>
-  <div class="loading-title">BBangWay <span style="font-size:12px;color:#bbb;font-weight:normal">v7</span></div>
+  <div class="loading-title">BBangWay <span style="font-size:12px;color:#bbb;font-weight:normal">v8</span></div>
   <div class="loading-sub">불러오는 중...</div>
 </div>
 
@@ -390,7 +390,7 @@ input[type=file] { display: none; }
 <div id="dashboard">
   <div class="header">
     <div class="header-left">
-      <div class="header-title">🥐 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v7</span></div>
+      <div class="header-title">🥐 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v8</span></div>
       <div class="header-store" id="headerStore"></div>
     </div>
     <button class="btn-logout" onclick="logout()">로그아웃</button>
@@ -969,12 +969,14 @@ function renderBreadGrid() {
 }
 
 // ── BREAD FORM ─────────────────────────────────────────────────
-function openBreadForm(breadId) {
+async function openBreadForm(breadId) {
   editingBreadId  = breadId;
   pendingPhotos   = [];
   existingPhotos  = [];
   deletedPhotoIds = [];
   pendingGlbFile  = null;
+  repPhotoId      = null;
+  repPendingIdx   = null;
 
   const bread = breadId ? breads.find(b => b.id === breadId) : null;
 
@@ -992,13 +994,15 @@ function openBreadForm(breadId) {
   sel.innerHTML = '<option value="">카테고리 없음</option>' +
     categories.map(c => `<option value="${c.id}"${defaultCat === c.id ? ' selected' : ''}>${c.name}</option>`).join('');
 
-  if (bread?.bread_photos?.length) {
-    existingPhotos = bread.bread_photos.map(p => ({ id: p.id, url: p.photo_url, is_representative: p.is_representative }));
-    repPhotoId    = existingPhotos.find(p => p.is_representative)?.id || existingPhotos[0]?.id || null;
-  } else {
-    repPhotoId = null;
+  // 사진은 항상 DB에서 직접 조회
+  if (breadId) {
+    const { data: photos } = await sb.from('bread_photos')
+      .select('*').eq('bread_id', breadId).order('created_at');
+    if (photos?.length) {
+      existingPhotos = photos.map(p => ({ id: p.id, url: p.photo_url, is_representative: p.is_representative }));
+      repPhotoId = existingPhotos.find(p => p.is_representative)?.id || existingPhotos[0]?.id || null;
+    }
   }
-  repPendingIdx = null;
 
   renderPhotoStrip();
   document.getElementById('breadForm').classList.add('show');
