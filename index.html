@@ -253,12 +253,13 @@ input[type=file] { display: none; }
 .btn-recog-camera   { width: 100%; padding: 16px; background: #cc0000; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
 .btn-recog-camera:active { background: #aa0000; }
 
-/* QR box in admin */
-.qr-box       { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0 4px; }
-.qr-canvas    { border-radius: 8px; }
-.qr-url       { font-size: 11px; color: #aaa; text-align: center; word-break: break-all; }
-.btn-copy-link { width: 100%; padding: 10px; background: #f0f0f0; border: none; border-radius: 8px; font-size: 13px; color: #555; cursor: pointer; font-weight: bold; margin-top: 4px; }
+/* QR */
+.btn-copy-link { padding: 6px 12px; background: #f0f0f0; border: none; border-radius: 6px; font-size: 11px; color: #555; cursor: pointer; font-weight: bold; }
 .btn-copy-link:active { background: #e0e0e0; }
+
+/* Mapping list */
+.mapping-bread-btn { padding: 10px 12px; background: #f8f8f8; border: 1.5px solid #eee; border-radius: 8px; font-size: 13px; font-weight: bold; color: #222; cursor: pointer; text-align: left; }
+.mapping-bread-btn:active { background: #fff0e8; border-color: #cc0000; }
 </style>
 </head>
 <body>
@@ -344,12 +345,8 @@ input[type=file] { display: none; }
       <button class="btn-primary" onclick="saveStoreSettings()">저장</button>
     </div>
     <div class="settings-card">
-      <div class="settings-card-title">직원 접속 QR</div>
-      <div class="qr-box">
-        <div id="qrCanvas" class="qr-canvas"></div>
-        <div class="qr-url" id="qrUrl"></div>
-        <button class="btn-copy-link" onclick="copyEmpLink()">🔗 링크 복사</button>
-      </div>
+      <div class="settings-card-title">접속 QR 코드</div>
+      <button class="btn-primary" onclick="openQrModal()">📱 QR 코드 보기</button>
     </div>
   </div>
 
@@ -461,6 +458,39 @@ input[type=file] { display: none; }
     <button class="btn-delete" id="btnDelete" style="display:none" onclick="confirmDeleteBread()">삭제</button>
     <button class="btn-cancel" onclick="closeBreadForm()">취소</button>
     <button class="btn-save"   onclick="saveBread()">저장</button>
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div class="overlay" id="qrModal">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-title">📱 접속 QR 코드</div>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:4px 0 10px">
+      <div style="text-align:center">
+        <div style="font-size:11px;font-weight:bold;color:#cc0000;margin-bottom:6px">👤 고객용</div>
+        <div id="qrCustomer"></div>
+        <button class="btn-copy-link" style="margin-top:6px" onclick="copyLink('customer')">링크 복사</button>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:11px;font-weight:bold;color:#555;margin-bottom:6px">👷 직원용</div>
+        <div id="qrStaff"></div>
+        <button class="btn-copy-link" style="margin-top:6px" onclick="copyLink('staff')">링크 복사</button>
+      </div>
+    </div>
+    <button class="btn-modal-cancel" style="width:100%" onclick="document.getElementById('qrModal').classList.remove('show')">닫기</button>
+  </div>
+</div>
+
+<!-- Mapping Selection Modal -->
+<div class="overlay" id="mappingModal">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-title">어떤 빵인가요?</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:10px;text-align:center">Gemini: "<span id="geminiResultText" style="color:#cc0000;font-weight:bold"></span>"</div>
+    <input class="form-input" id="mappingSearch" placeholder="빵 이름 검색..." oninput="filterMappingList(this.value)" style="margin-bottom:8px">
+    <div id="mappingList" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
+    <div class="modal-btns" style="margin-top:10px">
+      <button class="btn-modal-cancel" onclick="closeMappingModal()">취소 (모름)</button>
+    </div>
   </div>
 </div>
 
@@ -960,25 +990,37 @@ function showToast(msg, type = '') {
 }
 
 // ── QR / LINK ─────────────────────────────────────────────────
-function empUrl() {
-  return location.origin + location.pathname + '?store=' + currentStore.code;
+function storeUrl(mode) {
+  const base = location.origin + location.pathname + '?store=' + currentStore.code;
+  return mode === 'staff' ? base + '&mode=staff' : base;
 }
 
-async function generateQR() {
-  const url = empUrl();
+async function makeQR(elId, url) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
   try {
-    const dataUrl = await QRCode.toDataURL(url, { width: 180, margin: 1 });
-    document.getElementById('qrCanvas').innerHTML = `<img src="${dataUrl}" style="border-radius:8px;width:180px;height:180px">`;
+    const dataUrl = await QRCode.toDataURL(url, { width: 150, margin: 1 });
+    el.innerHTML = `<img src="${dataUrl}" style="border-radius:8px;width:150px;height:150px">`;
   } catch(e) {
-    document.getElementById('qrCanvas').innerHTML = `<div style="font-size:11px;word-break:break-all;color:#888;padding:8px">${url}</div>`;
+    el.innerHTML = `<div style="font-size:10px;word-break:break-all;color:#888;width:150px">${url}</div>`;
   }
-  document.getElementById('qrUrl').textContent = url;
 }
 
-async function copyEmpLink() {
-  try { await navigator.clipboard.writeText(empUrl()); showToast('링크 복사됐습니다 ✓'); }
-  catch { showToast('복사 실패 — 직접 선택해주세요', 'error'); }
+async function openQrModal() {
+  document.getElementById('qrModal').classList.add('show');
+  await Promise.all([
+    makeQR('qrCustomer', storeUrl('customer')),
+    makeQR('qrStaff',    storeUrl('staff')),
+  ]);
 }
+
+async function copyLink(mode) {
+  const url = storeUrl(mode);
+  try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
+  catch { showToast('복사 실패', 'error'); }
+}
+
+function generateQR() { /* no-op: QR은 모달에서 생성 */ }
 
 // ── EMPLOYEE SCREEN ────────────────────────────────────────────
 let empStore      = null;
@@ -992,18 +1034,21 @@ let qCorrect = 0, qWrong = 0, qStreak = 0;
 let qAnswering = false;
 
 async function loadEmployeeScreen(code) {
+  const empMode = new URLSearchParams(location.search).get('mode') || 'customer';
+
   const { data: store } = await sb.from('stores').select('*').eq('code', code).maybeSingle();
   if (!store) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">가게를 찾을 수 없습니다</div>'; return; }
   empStore = store;
 
   const [{ data: cats }, { data: brs }] = await Promise.all([
     sb.from('categories').select('*').eq('store_id', store.id).order('sort_order'),
-    sb.from('breads').select('*, bread_photos(id,photo_url)').eq('store_id', store.id).order('created_at'),
+    sb.from('breads').select('*, bread_photos(id,photo_url,is_representative)').eq('store_id', store.id).order('created_at'),
   ]);
   empCategories = cats || [];
   empBreads     = brs  || [];
 
-  document.getElementById('empStoreName').textContent = store.name;
+  const modeLabel = empMode === 'staff' ? ' — 직원' : '';
+  document.getElementById('empStoreName').textContent = store.name + modeLabel;
   document.title = store.name + ' — BBangWay';
   buildLearnList();
   renderEmpCatBar();
@@ -1148,15 +1193,13 @@ function handleAnswer(selectedId, correctId) {
 }
 
 // ── BREAD RECOGNITION ─────────────────────────────────────────
+let pendingGeminiResult = '';
+
 async function handleRecogPhoto(file) {
   if (!file) return;
   document.getElementById('recogInput').value = '';
 
-  // 미리보기
-  const previewUrl = URL.createObjectURL(file);
-  document.getElementById('recogPreview').innerHTML = `<img src="${previewUrl}">`;
-
-  // 결과창 로딩
+  document.getElementById('recogPreview').innerHTML = `<img src="${URL.createObjectURL(file)}">`;
   const resultEl = document.getElementById('recogResult');
   resultEl.className = 'recog-result loading';
   resultEl.innerHTML = '🔍 인식 중...';
@@ -1168,45 +1211,103 @@ async function handleRecogPhoto(file) {
   }
 
   try {
-    const base64 = await fileToBase64(file);
+    const base64   = await fileToBase64(file);
     const mimeType = file.type || 'image/jpeg';
-    const breadNames = empBreads.map(b => b.name).join(', ');
-    const prompt = `이 베이커리의 빵 목록: ${breadNames}\n\n사진 속 빵이 위 목록 중 어느 것인지 이름만 정확히 답해줘. 반드시 목록에 있는 이름 중 하나만 답해. 확신할 수 없으면 "모름"이라고만 해.`;
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { text: prompt },
-            { inline_data: { mime_type: mimeType, data: base64 } }
-          ]}]
-        })
-      }
-    );
+    // 1. Gemini에게 일반 이름 받기
+    const geminiResult = await callGeminiGeneric(base64, mimeType);
+    pendingGeminiResult = geminiResult;
 
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
+    // 2. 매핑 테이블 검색
+    const mapping = await lookupMapping(geminiResult);
 
-    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '모름';
-    const matched = empBreads.find(b => answer.includes(b.name));
-
-    resultEl.className = 'recog-result';
-    if (matched) {
-      const price = matched.price != null ? matched.price.toLocaleString() + '원' : '';
-      resultEl.innerHTML =
-        `<div class="recog-bread-name">${matched.name}</div>` +
-        (price ? `<div class="recog-bread-price">${price}</div>` : '') +
-        (matched.description ? `<div class="recog-bread-desc">${matched.description}</div>` : '');
+    if (mapping) {
+      showBreadResult(mapping.breads, resultEl);
     } else {
-      resultEl.innerHTML = `<div class="recog-no-match">인식하지 못했습니다<br><small style="color:#ccc">${answer}</small></div>`;
+      // 3. 매핑 없으면 수동 선택
+      resultEl.className = 'recog-result';
+      resultEl.innerHTML = `<div class="recog-no-match">처음 보는 빵이에요!<br><small style="color:#bbb">Gemini: "${geminiResult}"</small></div>`;
+      openMappingModal(geminiResult);
     }
   } catch (e) {
     resultEl.className = 'recog-result';
     resultEl.innerHTML = `<div class="recog-no-match">오류: ${e.message}</div>`;
   }
+}
+
+async function callGeminiGeneric(base64, mimeType) {
+  const prompt = '이 빵의 종류를 한국어로 짧게 답해줘. 예: 소보로빵, 단팥빵, 크림빵, 크로와상, 식빵. 빵 종류 이름만 답해.';
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_KEY}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [
+        { text: prompt },
+        { inline_data: { mime_type: mimeType, data: base64 } }
+      ]}]})
+    }
+  );
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim().replace(/[.\n"]/g, '');
+}
+
+async function lookupMapping(geminiResult) {
+  const { data } = await sb.from('bread_mappings')
+    .select('*, breads(*, bread_photos(id,photo_url,is_representative))')
+    .eq('store_id', empStore.id)
+    .ilike('gemini_result', geminiResult)
+    .maybeSingle();
+  return data;
+}
+
+async function saveMapping(geminiResult, breadId) {
+  await sb.from('bread_mappings').upsert(
+    { store_id: empStore.id, gemini_result: geminiResult, bread_id: breadId },
+    { onConflict: 'store_id,gemini_result' }
+  );
+}
+
+function showBreadResult(bread, resultEl) {
+  const price = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+  resultEl.className = 'recog-result';
+  resultEl.innerHTML =
+    `<div class="recog-bread-name">${bread.name}</div>` +
+    (price             ? `<div class="recog-bread-price">${price}</div>`            : '') +
+    (bread.description ? `<div class="recog-bread-desc">${bread.description}</div>` : '');
+}
+
+// ── MAPPING MODAL ──────────────────────────────────────────────
+function openMappingModal(geminiResult) {
+  document.getElementById('geminiResultText').textContent = geminiResult;
+  document.getElementById('mappingSearch').value = '';
+  filterMappingList('');
+  document.getElementById('mappingModal').classList.add('show');
+}
+
+function closeMappingModal() {
+  document.getElementById('mappingModal').classList.remove('show');
+}
+
+function filterMappingList(q) {
+  const list     = document.getElementById('mappingList');
+  const filtered = q ? empBreads.filter(b => b.name.includes(q)) : empBreads;
+  if (!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;color:#ccc;padding:12px;font-size:13px">검색 결과 없음</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(b => {
+    const price = b.price != null ? ` (${b.price.toLocaleString()}원)` : '';
+    return `<button class="mapping-bread-btn" onclick="selectMapping('${b.id}')">${b.name}<span style="font-weight:normal;color:#aaa;font-size:11px">${price}</span></button>`;
+  }).join('');
+}
+
+async function selectMapping(breadId) {
+  closeMappingModal();
+  const bread = empBreads.find(b => b.id === breadId);
+  if (!bread) return;
+  await saveMapping(pendingGeminiResult, breadId);
+  showBreadResult(bread, document.getElementById('recogResult'));
+  showToast(`"${pendingGeminiResult}" → "${bread.name}" 매핑 저장됐습니다 ✓`);
 }
 
 function fileToBase64(file) {

@@ -75,6 +75,32 @@ CREATE POLICY "owner_manage_photos" ON bread_photos FOR ALL USING (
 );
 CREATE POLICY "public_read_photos" ON bread_photos FOR SELECT USING (true);
 
+-- bread_photos 에 대표 사진 플래그 추가
+ALTER TABLE bread_photos ADD COLUMN IF NOT EXISTS is_representative BOOLEAN DEFAULT false;
+
+-- bread_mappings: Gemini 리턴값 → 가게 빵 ID 매핑
+CREATE TABLE IF NOT EXISTS bread_mappings (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  store_id      UUID        REFERENCES stores(id) ON DELETE CASCADE NOT NULL,
+  gemini_result TEXT        NOT NULL,
+  bread_id      UUID        REFERENCES breads(id) ON DELETE CASCADE NOT NULL,
+  created_at    TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(store_id, gemini_result)
+);
+
+ALTER TABLE bread_mappings ENABLE ROW LEVEL SECURITY;
+
+-- 오너: 전체 관리
+CREATE POLICY "owner_manage_mappings" ON bread_mappings FOR ALL USING (
+  EXISTS (SELECT 1 FROM stores WHERE id = bread_mappings.store_id AND owner_id = auth.uid())
+);
+-- 누구나 읽기 (직원/손님 인식 시 사용)
+CREATE POLICY "public_read_mappings" ON bread_mappings FOR SELECT USING (true);
+-- 비로그인 직원도 매핑 추가 가능 (store_id 알아야 함)
+CREATE POLICY "anon_insert_mappings" ON bread_mappings FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM stores WHERE id = bread_mappings.store_id)
+);
+
 -- ────────────────────────────────────────────────
 -- Storage 버킷 설정 (대시보드에서 수동 생성)
 -- ────────────────────────────────────────────────
