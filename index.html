@@ -935,7 +935,7 @@ async function moveCat(catId, dir) {
 // ── BREADS ─────────────────────────────────────────────────────
 async function loadBreads() {
   const { data } = await sb.from('breads')
-    .select('*, bread_photos(id, photo_url, is_representative)')
+    .select('*, bread_photos(*)')
     .eq('store_id', currentStore.id)
     .order('created_at', { ascending: false });
   breads = data || [];

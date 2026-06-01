@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bbangway-v6';
+﻿const CACHE_NAME = 'bbangway-v7';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -27,13 +27,13 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // Supabase API 요청은 항상 네트워크 우선
+  // Supabase API ?붿껌? ??긽 ?ㅽ듃?뚰겕 ?곗꽑
   if (url.hostname.includes('supabase.co') || url.hostname.includes('cdn.jsdelivr.net')) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
   }
 
-  // 정적 자산은 캐시 우선, 실패 시 네트워크
+  // ?뺤쟻 ?먯궛? 罹먯떆 ?곗꽑, ?ㅽ뙣 ???ㅽ듃?뚰겕
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
