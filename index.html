@@ -1475,7 +1475,7 @@ async function handleRecogPhoto(file) {
 async function callGeminiGeneric(base64, mimeType) {
   const prompt = '이 빵의 종류를 한국어로 짧게 답해줘. 예: 소보로빵, 단팥빵, 크림빵, 크로와상, 식빵. 빵 종류 이름만 답해.';
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${window.GEMINI_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${window.GEMINI_KEY}`,
     { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [
         { text: prompt },
