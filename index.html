@@ -197,6 +197,76 @@ body {
 input[type=file] { display: none; }
 ::-webkit-scrollbar { width: 0; }
 
+/* ── Customer Screen ── */
+#customerScreen { position: fixed; inset: 0; display: none; background: black; flex-direction: column; }
+#customerVideo  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#captureCanvas  { display: none; }
+
+.cust-overlay   { position: absolute; inset: 0; display: flex; flex-direction: column; pointer-events: none; }
+.cust-header    {
+  padding: 12px 16px; padding-top: calc(10px + env(safe-area-inset-top));
+  background: linear-gradient(to bottom, rgba(0,0,0,.55), transparent);
+  color: white; display: flex; justify-content: space-between; align-items: center; pointer-events: auto;
+}
+.cust-store-name { font-size: 15px; font-weight: bold; }
+.cust-brand      { font-size: 11px; opacity: .7; font-weight: bold; letter-spacing: 1px; }
+.cust-center     { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.viewfinder      {
+  width: 210px; height: 210px; border-radius: 18px; position: relative;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.35);
+}
+.viewfinder::before, .viewfinder::after {
+  content: ''; position: absolute; width: 28px; height: 28px; border-color: white; border-style: solid;
+}
+.viewfinder::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+.viewfinder::after  { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+.vf-corner-tr, .vf-corner-bl {
+  position: absolute; width: 28px; height: 28px; border-color: white; border-style: solid;
+}
+.vf-corner-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+.vf-corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+.vf-hint { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,.85); text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+
+.cust-footer {
+  padding: 16px 16px; padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(0,0,0,.5), transparent);
+  display: flex; justify-content: center; align-items: center; pointer-events: auto;
+}
+.btn-capture {
+  width: 70px; height: 70px; border-radius: 50%;
+  background: white; border: none; cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.4), 0 4px 16px rgba(0,0,0,.3);
+  transition: transform .1s;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+}
+.btn-capture:active   { transform: scale(.9); }
+.btn-capture.scanning { background: #ffd700; animation: capPulse .8s ease-in-out infinite alternate; }
+@keyframes capPulse { from { box-shadow: 0 0 0 4px rgba(255,215,0,.4); } to { box-shadow: 0 0 0 10px rgba(255,215,0,.1); } }
+
+.cust-fallback {
+  position: absolute; inset: 0; display: none; flex-direction: column;
+  align-items: center; justify-content: center; background: #111; gap: 12px;
+}
+.btn-fallback { padding: 16px 28px; background: #cc0000; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+/* Result card */
+.result-card {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white; border-radius: 24px 24px 0 0;
+  padding: 14px 20px calc(24px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform .4s cubic-bezier(.34,1.4,.64,1);
+  box-shadow: 0 -4px 24px rgba(0,0,0,.2); pointer-events: auto;
+}
+.result-card.show  { transform: translateY(0); }
+.result-handle     { width: 40px; height: 4px; border-radius: 2px; background: #e0e0e0; margin: 0 auto 14px; }
+.result-card-photo { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; display: block; }
+.result-card-name  { font-size: 22px; font-weight: bold; color: #222; margin-bottom: 4px; }
+.result-card-price { font-size: 17px; font-weight: bold; color: #cc0000; margin-bottom: 8px; }
+.result-card-desc  { font-size: 14px; color: #666; line-height: 1.65; margin-bottom: 16px; }
+.btn-retry { width: 100%; padding: 14px; background: #f5f5f5; border: none; border-radius: 12px; font-size: 14px; color: #555; cursor: pointer; font-weight: bold; }
+.btn-retry:active { background: #eee; }
+
 /* ── Employee Screen ── */
 #empScreen { flex: 1; display: none; flex-direction: column; overflow: hidden; background: #f5f5f5; }
 .emp-header { background: #cc0000; padding: 12px 14px 10px; flex-shrink: 0; }
@@ -369,6 +439,47 @@ input[type=file] { display: none; }
   </div>
 </div>
 
+<!-- Customer Screen -->
+<div id="customerScreen">
+  <video id="customerVideo" autoplay playsinline muted></video>
+  <canvas id="captureCanvas"></canvas>
+
+  <div class="cust-overlay">
+    <div class="cust-header">
+      <span class="cust-store-name" id="customerStoreName"></span>
+      <span class="cust-brand">BBangWay</span>
+    </div>
+    <div class="cust-center">
+      <div class="viewfinder">
+        <div class="vf-corner-tr"></div>
+        <div class="vf-corner-bl"></div>
+      </div>
+      <div class="vf-hint" id="vfHint">빵을 카메라에 비추고 버튼을 누르세요</div>
+    </div>
+    <div class="cust-footer">
+      <button class="btn-capture" id="btnCapture" onclick="captureAndRecognize()">📷</button>
+    </div>
+
+    <!-- 결과 카드 -->
+    <div class="result-card" id="resultCard">
+      <div class="result-handle"></div>
+      <img class="result-card-photo" id="resultPhoto" src="" alt="" style="display:none">
+      <div class="result-card-name"  id="resultName"></div>
+      <div class="result-card-price" id="resultPrice"></div>
+      <div class="result-card-desc"  id="resultDesc"></div>
+      <button class="btn-retry" onclick="closeResultCard()">📷 다시 찍기</button>
+    </div>
+  </div>
+
+  <!-- 카메라 미지원 시 폴백 -->
+  <div class="cust-fallback" id="custFallback">
+    <div style="color:white;font-size:16px;font-weight:bold;margin-bottom:4px">카메라를 시작할 수 없어요</div>
+    <div style="color:#aaa;font-size:13px;margin-bottom:16px">아래 버튼으로 사진을 찍어보세요</div>
+    <button class="btn-fallback" onclick="document.getElementById('fallbackInput').click()">📷 빵 사진 찍기</button>
+    <input type="file" id="fallbackInput" accept="image/*" capture="environment" onchange="handleFallbackPhoto(this.files[0])">
+  </div>
+</div>
+
 <!-- Employee Screen -->
 <div id="empScreen">
   <div class="emp-header">
@@ -537,8 +648,14 @@ let editingCatId = null;
 
 // ── INIT ───────────────────────────────────────────────────────
 async function init() {
-  const storeCode = new URLSearchParams(location.search).get('store');
-  if (storeCode) { await loadEmployeeScreen(storeCode); return; }
+  const params    = new URLSearchParams(location.search);
+  const storeCode = params.get('store');
+  const storeMode = params.get('mode') || 'customer';
+  if (storeCode) {
+    if (storeMode === 'staff') await loadEmployeeScreen(storeCode);
+    else                       await loadCustomerScreen(storeCode);
+    return;
+  }
 
   const { data: { session } } = await sb.auth.getSession();
   if (session) { currentUser = session.user; await afterLogin(); }
@@ -564,12 +681,13 @@ async function afterLogin() {
 
 // ── SCREENS ────────────────────────────────────────────────────
 function showScreen(name) {
-  document.getElementById('loading').style.display    = 'none';
-  document.getElementById('authScreen').style.display = name === 'auth'       ? 'flex' : 'none';
-  document.getElementById('storeSetup').style.display = name === 'storeSetup' ? 'flex' : 'none';
-  document.getElementById('dashboard').style.display  = name === 'dashboard'  ? 'flex' : 'none';
-  document.getElementById('empScreen').style.display  = name === 'employee'   ? 'flex' : 'none';
-  document.getElementById('fab').style.display        = name === 'dashboard'  ? 'flex' : 'none';
+  document.getElementById('loading').style.display        = 'none';
+  document.getElementById('authScreen').style.display     = name === 'auth'       ? 'flex' : 'none';
+  document.getElementById('storeSetup').style.display     = name === 'storeSetup' ? 'flex' : 'none';
+  document.getElementById('dashboard').style.display      = name === 'dashboard'  ? 'flex' : 'none';
+  document.getElementById('empScreen').style.display      = name === 'employee'   ? 'flex' : 'none';
+  document.getElementById('customerScreen').style.display = name === 'customer'   ? 'flex' : 'none';
+  document.getElementById('fab').style.display            = name === 'dashboard'  ? 'flex' : 'none';
 }
 
 function showDashboard() {
@@ -1035,6 +1153,108 @@ async function openEmpCustomerQR() {
   };
   document.getElementById('qrModal').classList.add('show');
   await makeQR('qrSingle', url);
+}
+
+// ── CUSTOMER SCREEN ────────────────────────────────────────────
+let customerStream = null;
+
+async function loadCustomerScreen(code) {
+  const { data: store } = await sb.from('stores').select('*').eq('code', code).maybeSingle();
+  if (!store) {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">가게를 찾을 수 없습니다</div>';
+    return;
+  }
+  empStore = store;
+  empStoreCode = code;
+
+  const { data: brs } = await sb.from('breads')
+    .select('*, bread_photos(id,photo_url,is_representative)')
+    .eq('store_id', store.id).order('created_at');
+  empBreads = brs || [];
+
+  document.getElementById('customerStoreName').textContent = store.name;
+  document.title = store.name + ' — BBangWay';
+
+  showScreen('customer');
+  await startCustomerCamera();
+}
+
+async function startCustomerCamera() {
+  try {
+    customerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    document.getElementById('customerVideo').srcObject = customerStream;
+  } catch(e) {
+    document.getElementById('custFallback').style.display = 'flex';
+  }
+}
+
+async function captureAndRecognize() {
+  if (!window.GEMINI_KEY) { setVfHint('API 키가 설정되지 않았습니다'); return; }
+
+  const btn = document.getElementById('btnCapture');
+  btn.classList.add('scanning'); btn.disabled = true;
+  setVfHint('🔍 인식 중...');
+
+  const video  = document.getElementById('customerVideo');
+  const canvas = document.getElementById('captureCanvas');
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  canvas.toBlob(async (blob) => {
+    try {
+      const base64      = await fileToBase64(blob);
+      const geminiResult = await callGeminiGeneric(base64, 'image/jpeg');
+      const mapping     = await lookupMapping(geminiResult);
+
+      if (mapping) {
+        showCustomerResult(mapping.breads);
+        setVfHint('빵을 카메라에 비추고 버튼을 누르세요');
+      } else {
+        setVfHint('인식하지 못했어요. 더 가까이 대보세요 🥐');
+        setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
+      }
+    } catch(e) {
+      setVfHint('오류가 발생했습니다. 다시 시도해주세요.');
+      setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
+    }
+    btn.classList.remove('scanning'); btn.disabled = false;
+  }, 'image/jpeg', 0.85);
+}
+
+function setVfHint(msg) {
+  document.getElementById('vfHint').textContent = msg;
+}
+
+function showCustomerResult(bread) {
+  const repPhoto = bread.bread_photos?.find(p => p.is_representative)?.photo_url
+                || bread.bread_photos?.[0]?.photo_url;
+  const photoEl  = document.getElementById('resultPhoto');
+  if (repPhoto) { photoEl.src = repPhoto; photoEl.style.display = 'block'; }
+  else          { photoEl.style.display = 'none'; }
+
+  document.getElementById('resultName').textContent  = bread.name;
+  document.getElementById('resultPrice').textContent = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+  document.getElementById('resultDesc').textContent  = bread.description || '';
+  document.getElementById('resultCard').classList.add('show');
+}
+
+function closeResultCard() {
+  document.getElementById('resultCard').classList.remove('show');
+}
+
+async function handleFallbackPhoto(file) {
+  if (!file || !window.GEMINI_KEY) return;
+  document.getElementById('fallbackInput').value = '';
+  try {
+    const base64      = await fileToBase64(file);
+    const geminiResult = await callGeminiGeneric(base64, file.type || 'image/jpeg');
+    const mapping     = await lookupMapping(geminiResult);
+    if (mapping) showCustomerResult(mapping.breads);
+    else alert('인식하지 못했어요. 다시 시도해주세요.');
+  } catch(e) { alert('오류: ' + e.message); }
 }
 
 // ── EMPLOYEE SCREEN ────────────────────────────────────────────
