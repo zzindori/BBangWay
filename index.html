@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>BBangWay 관리자</title>
-<meta name="description" content="베이커리 빵 인식 앱 관리자">
+<title>BBangWay 愿由ъ옄</title>
+<meta name="description" content="踰좎씠而ㅻ━ 鍮??몄떇 ??愿由ъ옄">
 <meta name="theme-color" content="#cc0000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,7 +25,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* ── Loading ── */
+/* ?? Loading ?? */
 #loading {
   position: fixed; inset: 0; background: white; z-index: 999999;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
@@ -34,7 +34,7 @@ body {
 .loading-title { font-size: 22px; font-weight: bold; color: #cc0000; }
 .loading-sub   { font-size: 13px; color: #aaa; }
 
-/* ── Auth ── */
+/* ?? Auth ?? */
 #authScreen {
   flex: 1; display: none; flex-direction: column; align-items: center;
   justify-content: center; padding: 28px; overflow-y: auto;
@@ -54,7 +54,7 @@ body {
 .btn-auth   { padding: 14px; background: #cc0000; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 2px; }
 .btn-auth:active { background: #aa0000; }
 
-/* ── Store Setup ── */
+/* ?? Store Setup ?? */
 #storeSetup {
   flex: 1; display: none; flex-direction: column; align-items: center;
   justify-content: center; padding: 28px; overflow-y: auto;
@@ -64,7 +64,7 @@ body {
 .setup-sub   { font-size: 13px; color: #888; margin-bottom: 24px; text-align: center; line-height: 1.6; }
 .setup-form  { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
 
-/* ── Common form elements ── */
+/* ?? Common form elements ?? */
 .form-group    { display: flex; flex-direction: column; gap: 4px; }
 .form-label    { font-size: 12px; font-weight: bold; color: #555; }
 .form-label.req::after { content: ' *'; color: #cc0000; }
@@ -82,7 +82,7 @@ body {
 .btn-danger   { padding: 12px 18px; background: white; color: #f44336; border: 1.5px solid #f44336; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
 .btn-danger:active   { background: #fff0f0; }
 
-/* ── Dashboard ── */
+/* ?? Dashboard ?? */
 #dashboard { flex: 1; display: none; flex-direction: column; overflow: hidden; }
 
 .header { background: #cc0000; color: white; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -91,17 +91,17 @@ body {
 .btn-logout { padding: 5px 10px; background: rgba(255,255,255,.18); color: white; border: 1px solid rgba(255,255,255,.35); border-radius: 5px; font-size: 11px; cursor: pointer; }
 .btn-logout:active { background: rgba(255,255,255,.3); }
 
-/* ── Views ── */
+/* ?? Views ?? */
 .view { flex: 1; overflow-y: auto; display: none; padding: 12px; -webkit-overflow-scrolling: touch; }
 .view.active { display: block; }
 
-/* ── Bottom Nav ── */
+/* ?? Bottom Nav ?? */
 .bottom-nav { background: white; border-top: 1px solid #e8e8e8; display: flex; flex-shrink: 0; }
 .nav-btn { flex: 1; padding: 8px 4px 6px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #bbb; font-size: 10px; font-weight: bold; }
 .nav-btn.active { color: #cc0000; }
 .nav-icon { font-size: 20px; line-height: 1; }
 
-/* ── Bread List View ── */
+/* ?? Bread List View ?? */
 .cat-filter { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
 .cat-filter::-webkit-scrollbar { display: none; }
 .cat-chip { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; white-space: nowrap; border: 1.5px solid #ddd; background: white; cursor: pointer; color: #888; flex-shrink: 0; }
@@ -125,7 +125,7 @@ body {
 .fab { position: fixed; bottom: calc(58px + env(safe-area-inset-bottom) + 14px); right: 16px; width: 52px; height: 52px; border-radius: 50%; background: #cc0000; color: white; border: none; font-size: 26px; cursor: pointer; box-shadow: 0 4px 14px rgba(204,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 100; line-height: 1; }
 .fab:active { background: #aa0000; transform: scale(.95); }
 
-/* ── Category View ── */
+/* ?? Category View ?? */
 .section-header { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
 .cat-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .cat-item { background: white; border-radius: 8px; padding: 11px 12px; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
@@ -140,7 +140,7 @@ body {
 .btn-dashed { width: 100%; padding: 13px; background: white; border: 2px dashed #ddd; border-radius: 8px; font-size: 13px; color: #aaa; cursor: pointer; font-weight: bold; }
 .btn-dashed:active { background: #f8f8f8; }
 
-/* ── Store Settings View ── */
+/* ?? Store Settings View ?? */
 .settings-card { background: white; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
 .settings-card-title { font-size: 11px; font-weight: bold; color: #bbb; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
 .settings-row { margin-bottom: 12px; }
@@ -149,7 +149,7 @@ body {
 .code-text { font-size: 24px; font-weight: bold; color: #cc0000; letter-spacing: 4px; font-family: monospace; }
 .code-sub  { font-size: 11px; color: #bbb; margin-top: 4px; }
 
-/* ── Bread Form (full-screen) ── */
+/* ?? Bread Form (full-screen) ?? */
 #breadForm { position: fixed; inset: 0; background: #f5f5f5; z-index: 9999; display: none; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
 #breadForm.show { display: flex; }
 .form-head { background: #cc0000; color: white; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -158,7 +158,7 @@ body {
 .form-scroll { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
 
 /* Photo strip */
-.photo-strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; -webkit-overflow-scrolling: touch; }
+.photo-strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; -webkit-overflow-scrolling: touch; min-height: 90px; align-items: center; }
 .photo-strip::-webkit-scrollbar { display: none; }
 .photo-wrap { position: relative; flex-shrink: 0; width: 80px; height: 80px; touch-action: pan-x; }
 .photo-wrap img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; display: block; }
@@ -182,7 +182,7 @@ body {
 .btn-delete { flex: 1; padding: 13px; background: white; color: #f44336; border: 1.5px solid #f44336; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
 .btn-delete:active { background: #fff0f0; }
 
-/* ── Category Modal ── */
+/* ?? Category Modal ?? */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 24px; }
 .overlay.show { display: flex; }
 .modal { background: white; border-radius: 12px; padding: 20px; width: 100%; max-width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,.2); }
@@ -192,7 +192,7 @@ body {
 .btn-modal-ok:active { background: #aa0000; }
 .btn-modal-cancel { flex: 1; padding: 11px; background: #f0f0f0; color: #555; border: none; border-radius: 7px; font-size: 13px; cursor: pointer; }
 
-/* ── Toast ── */
+/* ?? Toast ?? */
 #toast { position: fixed; bottom: calc(64px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.78); color: white; padding: 10px 18px; border-radius: 20px; font-size: 13px; z-index: 999999; opacity: 0; pointer-events: none; transition: opacity .25s; white-space: nowrap; max-width: 88vw; overflow: hidden; text-overflow: ellipsis; }
 #toast.show  { opacity: 1; }
 #toast.error { background: rgba(244,67,54,.9); }
@@ -200,7 +200,7 @@ body {
 input[type=file] { display: none; }
 ::-webkit-scrollbar { width: 0; }
 
-/* ── Customer Screen ── */
+/* ?? Customer Screen ?? */
 #customerScreen { position: fixed; inset: 0; display: none; background: black; flex-direction: column; }
 #customerVideo  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 #captureCanvas  { display: none; }
@@ -270,7 +270,7 @@ input[type=file] { display: none; }
 .btn-retry { width: 100%; padding: 14px; background: #f5f5f5; border: none; border-radius: 12px; font-size: 14px; color: #555; cursor: pointer; font-weight: bold; }
 .btn-retry:active { background: #eee; }
 
-/* ── Employee Screen ── */
+/* ?? Employee Screen ?? */
 #empScreen { flex: 1; display: none; flex-direction: column; overflow: hidden; background: #f5f5f5; }
 .emp-header { background: #cc0000; padding: 12px 14px 10px; flex-shrink: 0; }
 .emp-store  { font-size: 15px; font-weight: bold; color: white; margin-bottom: 8px; }
@@ -345,44 +345,44 @@ input[type=file] { display: none; }
 
 <!-- Loading -->
 <div id="loading">
-  <div class="loading-logo">🥐</div>
+  <div class="loading-logo">?쪖</div>
   <div class="loading-title">BBangWay <span style="font-size:12px;color:#bbb;font-weight:normal">v8</span></div>
-  <div class="loading-sub">불러오는 중...</div>
+  <div class="loading-sub">遺덈윭?ㅻ뒗 以?..</div>
 </div>
 
 <!-- Auth -->
 <div id="authScreen">
-  <div class="auth-logo">🥐</div>
+  <div class="auth-logo">?쪖</div>
   <div class="auth-title">BBangWay</div>
-  <div class="auth-sub">베이커리 빵 인식 앱</div>
+  <div class="auth-sub">踰좎씠而ㅻ━ 鍮??몄떇 ??/div>
   <div class="auth-tabs">
-    <button class="auth-tab active" onclick="switchAuthTab('login')">로그인</button>
-    <button class="auth-tab"        onclick="switchAuthTab('signup')">회원가입</button>
+    <button class="auth-tab active" onclick="switchAuthTab('login')">濡쒓렇??/button>
+    <button class="auth-tab"        onclick="switchAuthTab('signup')">?뚯썝媛??/button>
   </div>
   <div class="auth-form">
-    <input class="auth-input" type="email"    id="authEmail"    placeholder="이메일" autocomplete="email">
-    <input class="auth-input" type="password" id="authPw"       placeholder="비밀번호" autocomplete="current-password">
-    <input class="auth-input" type="password" id="authPwConfirm" placeholder="비밀번호 확인" style="display:none" autocomplete="new-password">
+    <input class="auth-input" type="email"    id="authEmail"    placeholder="?대찓?? autocomplete="email">
+    <input class="auth-input" type="password" id="authPw"       placeholder="鍮꾨?踰덊샇" autocomplete="current-password">
+    <input class="auth-input" type="password" id="authPwConfirm" placeholder="鍮꾨?踰덊샇 ?뺤씤" style="display:none" autocomplete="new-password">
     <div class="auth-error" id="authError"></div>
-    <button class="btn-auth" id="btnAuth" onclick="handleAuth()">로그인</button>
+    <button class="btn-auth" id="btnAuth" onclick="handleAuth()">濡쒓렇??/button>
   </div>
 </div>
 
 <!-- Store Setup -->
 <div id="storeSetup">
-  <div class="setup-emoji">🏪</div>
-  <div class="setup-title">가게 등록</div>
-  <div class="setup-sub">BBangWay에 오신 것을 환영합니다!<br>먼저 가게 정보를 입력해주세요.</div>
+  <div class="setup-emoji">?룵</div>
+  <div class="setup-title">媛寃??깅줉</div>
+  <div class="setup-sub">BBangWay???ㅼ떊 寃껋쓣 ?섏쁺?⑸땲??<br>癒쇱? 媛寃??뺣낫瑜??낅젰?댁＜?몄슂.</div>
   <div class="setup-form">
     <div class="form-group">
-      <label class="form-label req">가게 이름</label>
-      <input class="form-input" type="text" id="setupName" placeholder="예: 은영베이커리">
+      <label class="form-label req">媛寃??대쫫</label>
+      <input class="form-input" type="text" id="setupName" placeholder="?? ??곷쿋?댁빱由?>
     </div>
     <div class="form-group">
-      <label class="form-label">한줄 소개 (선택)</label>
-      <textarea class="form-textarea" id="setupDesc" placeholder="가게 소개를 입력해주세요"></textarea>
+      <label class="form-label">?쒖쨪 ?뚭컻 (?좏깮)</label>
+      <textarea class="form-textarea" id="setupDesc" placeholder="媛寃??뚭컻瑜??낅젰?댁＜?몄슂"></textarea>
     </div>
-    <button class="btn-primary" onclick="createStore()">가게 만들기</button>
+    <button class="btn-primary" onclick="createStore()">媛寃?留뚮뱾湲?/button>
   </div>
 </div>
 
@@ -390,60 +390,60 @@ input[type=file] { display: none; }
 <div id="dashboard">
   <div class="header">
     <div class="header-left">
-      <div class="header-title">🥐 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v8</span></div>
+      <div class="header-title">?쪖 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v8</span></div>
       <div class="header-store" id="headerStore"></div>
     </div>
-    <button class="btn-logout" onclick="logout()">로그아웃</button>
+    <button class="btn-logout" onclick="logout()">濡쒓렇?꾩썐</button>
   </div>
 
-  <!-- 빵 목록 -->
+  <!-- 鍮?紐⑸줉 -->
   <div class="view active" id="viewBreads">
     <div class="cat-filter" id="catFilter"></div>
     <div class="bread-grid" id="breadGrid"></div>
   </div>
 
-  <!-- 카테고리 -->
+  <!-- 移댄뀒怨좊━ -->
   <div class="view" id="viewCategories">
-    <div class="section-header">카테고리 관리</div>
+    <div class="section-header">移댄뀒怨좊━ 愿由?/div>
     <div class="cat-list" id="catList"></div>
-    <button class="btn-dashed" onclick="openCatModal(null)">＋ 카테고리 추가</button>
+    <button class="btn-dashed" onclick="openCatModal(null)">竊?移댄뀒怨좊━ 異붽?</button>
   </div>
 
-  <!-- 가게 설정 -->
+  <!-- 媛寃??ㅼ젙 -->
   <div class="view" id="viewStore">
     <div class="settings-card">
-      <div class="settings-card-title">가게 정보</div>
+      <div class="settings-card-title">媛寃??뺣낫</div>
       <div class="settings-row form-group">
-        <label class="form-label req">가게 이름</label>
+        <label class="form-label req">媛寃??대쫫</label>
         <input class="form-input" type="text" id="settingsName">
       </div>
       <div class="settings-row form-group">
-        <label class="form-label">한줄 소개</label>
+        <label class="form-label">?쒖쨪 ?뚭컻</label>
         <textarea class="form-textarea" id="settingsDesc"></textarea>
       </div>
-      <button class="btn-primary" onclick="saveStoreSettings()">저장</button>
+      <button class="btn-primary" onclick="saveStoreSettings()">???/button>
     </div>
     <div class="settings-card">
-      <div class="settings-card-title">직원 접속 QR</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:10px">직원이 학습·퀴즈·빵 인식에 사용하는 링크입니다</div>
-      <button class="btn-secondary" onclick="openQrModal('staff')">👷 직원용 QR 보기</button>
+      <div class="settings-card-title">吏곸썝 ?묒냽 QR</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:10px">吏곸썝???숈뒿쨌?댁쫰쨌鍮??몄떇???ъ슜?섎뒗 留곹겕?낅땲??/div>
+      <button class="btn-secondary" onclick="openQrModal('staff')">?뫕 吏곸썝??QR 蹂닿린</button>
     </div>
     <div class="settings-card">
-      <div class="settings-card-title">고객 접속 QR</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:10px">손님이 빵 정보를 확인하는 링크입니다</div>
-      <button class="btn-primary" onclick="openQrModal('customer')">👤 고객용 QR 보기</button>
+      <div class="settings-card-title">怨좉컼 ?묒냽 QR</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:10px">?먮떂??鍮??뺣낫瑜??뺤씤?섎뒗 留곹겕?낅땲??/div>
+      <button class="btn-primary" onclick="openQrModal('customer')">?뫀 怨좉컼??QR 蹂닿린</button>
     </div>
   </div>
 
   <div class="bottom-nav">
     <button class="nav-btn active" id="navBreads"      onclick="switchView('Breads')">
-      <span class="nav-icon">🥐</span><span>빵 목록</span>
+      <span class="nav-icon">?쪖</span><span>鍮?紐⑸줉</span>
     </button>
     <button class="nav-btn"        id="navCategories"  onclick="switchView('Categories')">
-      <span class="nav-icon">📂</span><span>카테고리</span>
+      <span class="nav-icon">?뱛</span><span>移댄뀒怨좊━</span>
     </button>
     <button class="nav-btn"        id="navStore"       onclick="switchView('Store')">
-      <span class="nav-icon">⚙️</span><span>가게 설정</span>
+      <span class="nav-icon">?숋툘</span><span>媛寃??ㅼ젙</span>
     </button>
   </div>
 </div>
@@ -463,28 +463,28 @@ input[type=file] { display: none; }
         <div class="vf-corner-tr"></div>
         <div class="vf-corner-bl"></div>
       </div>
-      <div class="vf-hint" id="vfHint">빵을 카메라에 비추고 버튼을 누르세요</div>
+      <div class="vf-hint" id="vfHint">鍮듭쓣 移대찓?쇱뿉 鍮꾩텛怨?踰꾪듉???꾨Ⅴ?몄슂</div>
     </div>
     <div class="cust-footer">
-      <button class="btn-capture" id="btnCapture" onclick="captureAndRecognize()">📷</button>
+      <button class="btn-capture" id="btnCapture" onclick="captureAndRecognize()">?벜</button>
     </div>
 
-    <!-- 결과 카드 -->
+    <!-- 寃곌낵 移대뱶 -->
     <div class="result-card" id="resultCard">
       <div class="result-handle"></div>
       <img class="result-card-photo" id="resultPhoto" src="" alt="" style="display:none">
       <div class="result-card-name"  id="resultName"></div>
       <div class="result-card-price" id="resultPrice"></div>
       <div class="result-card-desc"  id="resultDesc"></div>
-      <button class="btn-retry" onclick="closeResultCard()">📷 다시 찍기</button>
+      <button class="btn-retry" onclick="closeResultCard()">?벜 ?ㅼ떆 李띻린</button>
     </div>
   </div>
 
-  <!-- 카메라 미지원 시 폴백 -->
+  <!-- 移대찓??誘몄??????대갚 -->
   <div class="cust-fallback" id="custFallback">
-    <div style="color:white;font-size:16px;font-weight:bold;margin-bottom:4px">카메라를 시작할 수 없어요</div>
-    <div style="color:#aaa;font-size:13px;margin-bottom:16px">아래 버튼으로 사진을 찍어보세요</div>
-    <button class="btn-fallback" onclick="document.getElementById('fallbackInput').click()">📷 빵 사진 찍기</button>
+    <div style="color:white;font-size:16px;font-weight:bold;margin-bottom:4px">移대찓?쇰? ?쒖옉?????놁뼱??/div>
+    <div style="color:#aaa;font-size:13px;margin-bottom:16px">?꾨옒 踰꾪듉?쇰줈 ?ъ쭊??李띿뼱蹂댁꽭??/div>
+    <button class="btn-fallback" onclick="document.getElementById('fallbackInput').click()">?벜 鍮??ъ쭊 李띻린</button>
     <input type="file" id="fallbackInput" accept="image/*" capture="environment" onchange="handleFallbackPhoto(this.files[0])">
   </div>
 </div>
@@ -494,39 +494,39 @@ input[type=file] { display: none; }
   <div class="emp-header">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div class="emp-store" id="empStoreName"></div>
-      <button id="empQrBtn" style="display:none;padding:4px 10px;background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.4);border-radius:5px;font-size:11px;cursor:pointer" onclick="openEmpCustomerQR()">👤 고객 QR</button>
+      <button id="empQrBtn" style="display:none;padding:4px 10px;background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.4);border-radius:5px;font-size:11px;cursor:pointer" onclick="openEmpCustomerQR()">?뫀 怨좉컼 QR</button>
     </div>
     <div class="emp-tabs">
-      <button class="emp-tab active" id="empTabLearn"      onclick="switchEmpMode('learn')">📖 학습</button>
-      <button class="emp-tab"        id="empTabQuiz"       onclick="switchEmpMode('quiz')">🎯 퀴즈</button>
-      <button class="emp-tab"        id="empTabRecognize"  onclick="switchEmpMode('recognize')">📷 인식</button>
+      <button class="emp-tab active" id="empTabLearn"      onclick="switchEmpMode('learn')">?뱰 ?숈뒿</button>
+      <button class="emp-tab"        id="empTabQuiz"       onclick="switchEmpMode('quiz')">?렞 ?댁쫰</button>
+      <button class="emp-tab"        id="empTabRecognize"  onclick="switchEmpMode('recognize')">?벜 ?몄떇</button>
     </div>
   </div>
 
-  <!-- 학습 모드 -->
+  <!-- ?숈뒿 紐⑤뱶 -->
   <div id="empLearnView">
     <div class="emp-cat-bar" id="empCatBar"></div>
     <div class="learn-wrap">
       <div class="learn-card" id="learnCard"></div>
     </div>
     <div class="learn-nav">
-      <button class="btn-ln" id="btnLearnPrev" onclick="learnMove(-1)">◀</button>
+      <button class="btn-ln" id="btnLearnPrev" onclick="learnMove(-1)">?</button>
       <span class="learn-prog" id="learnProg"></span>
-      <button class="btn-ln" id="btnLearnNext" onclick="learnMove(1)">▶</button>
+      <button class="btn-ln" id="btnLearnNext" onclick="learnMove(1)">??/button>
     </div>
   </div>
 
-  <!-- 퀴즈 모드 -->
+  <!-- ?댁쫰 紐⑤뱶 -->
   <div id="empQuizView">
     <div class="quiz-top">
-      <span class="quiz-score-txt"  id="qScoreTxt">정답 0 / 오답 0</span>
-      <span class="quiz-streak-txt" id="qStreakTxt">🔥 0연속</span>
+      <span class="quiz-score-txt"  id="qScoreTxt">?뺣떟 0 / ?ㅻ떟 0</span>
+      <span class="quiz-streak-txt" id="qStreakTxt">?뵦 0?곗냽</span>
     </div>
     <div class="quiz-img-box" id="qImgBox"></div>
     <div class="quiz-opts"    id="qOpts"></div>
   </div>
 
-  <!-- 인식 모드 -->
+  <!-- ?몄떇 紐⑤뱶 -->
   <div id="empRecognizeView">
     <div class="staff-cam-wrap">
       <video id="staffVideo" autoplay playsinline muted></video>
@@ -536,101 +536,101 @@ input[type=file] { display: none; }
           <div class="vf-corner-tr"></div>
           <div class="vf-corner-bl"></div>
         </div>
-        <div class="vf-hint" id="staffVfHint">빵을 가운데에 맞추고 버튼을 누르세요</div>
+        <div class="vf-hint" id="staffVfHint">鍮듭쓣 媛?대뜲??留욎텛怨?踰꾪듉???꾨Ⅴ?몄슂</div>
       </div>
-      <!-- 폴백: 카메라 미지원 -->
+      <!-- ?대갚: 移대찓??誘몄???-->
       <div class="staff-cam-fallback" id="staffFallback">
-        <button class="btn-fallback" onclick="document.getElementById('recogInput').click()">📷 빵 찍기</button>
+        <button class="btn-fallback" onclick="document.getElementById('recogInput').click()">?벜 鍮?李띻린</button>
         <input type="file" id="recogInput" accept="image/*" capture="environment" onchange="handleRecogPhoto(this.files[0])">
       </div>
     </div>
     <div class="staff-capture-row">
-      <button class="btn-capture" id="btnStaffCapture" onclick="staffCaptureAndRecognize()">📷</button>
+      <button class="btn-capture" id="btnStaffCapture" onclick="staffCaptureAndRecognize()">?벜</button>
     </div>
-    <!-- 결과 카드 (슬라이드업) -->
+    <!-- 寃곌낵 移대뱶 (?щ씪?대뱶?? -->
     <div class="staff-result-card" id="staffResultCard">
       <div class="result-handle"></div>
       <div class="recog-bread-name"  id="staffResultName"></div>
       <div class="recog-bread-price" id="staffResultPrice"></div>
       <div class="recog-bread-desc"  id="staffResultDesc"></div>
-      <button class="btn-retry" style="margin-top:10px" onclick="closeStaffResult()">📷 다시 찍기</button>
+      <button class="btn-retry" style="margin-top:10px" onclick="closeStaffResult()">?벜 ?ㅼ떆 李띻린</button>
     </div>
   </div>
 </div>
 
 <!-- FAB -->
-<button class="fab" id="fab" onclick="openBreadForm(null)">＋</button>
+<button class="fab" id="fab" onclick="openBreadForm(null)">竊?/button>
 
 <!-- Bread Form -->
 <div id="breadForm">
   <div class="form-head">
-    <span class="form-head-title" id="breadFormTitle">빵 추가</span>
-    <button class="btn-close-form" onclick="closeBreadForm()">✕ 닫기</button>
+    <span class="form-head-title" id="breadFormTitle">鍮?異붽?</span>
+    <button class="btn-close-form" onclick="closeBreadForm()">???リ린</button>
   </div>
   <div class="form-scroll">
     <div class="form-group">
-      <label class="form-label">사진</label>
+      <label class="form-label">?ъ쭊</label>
       <div class="photo-btns">
-        <button class="btn-photo-source" onclick="document.getElementById('photoCamera').click()">📷 카메라 촬영</button>
-        <button class="btn-photo-source" onclick="document.getElementById('photoGallery').click()">🖼️ 갤러리 선택</button>
+        <button class="btn-photo-source" onclick="document.getElementById('photoCamera').click()">?벜 移대찓??珥ъ쁺</button>
+        <button class="btn-photo-source" onclick="document.getElementById('photoGallery').click()">?뼹截?媛ㅻ윭由??좏깮</button>
       </div>
       <div class="photo-strip" id="photoStrip"></div>
       <input type="file" id="photoCamera"  accept="image/*" capture="environment" onchange="handlePhotoInput(this.files)">
       <input type="file" id="photoGallery" accept="image/*" multiple            onchange="handlePhotoInput(this.files)">
     </div>
     <div class="form-group">
-      <label class="form-label req">빵 이름</label>
-      <input class="form-input" type="text" id="fieldName" placeholder="예: 단팥크림빵">
+      <label class="form-label req">鍮??대쫫</label>
+      <input class="form-input" type="text" id="fieldName" placeholder="?? ?⑦뙠?щ┝鍮?>
     </div>
     <div class="form-group">
-      <label class="form-label">카테고리</label>
+      <label class="form-label">移댄뀒怨좊━</label>
       <select class="form-select" id="fieldCat">
-        <option value="">카테고리 없음</option>
+        <option value="">移댄뀒怨좊━ ?놁쓬</option>
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">가격 (원)</label>
-      <input class="form-input" type="number" id="fieldPrice" placeholder="예: 3500">
+      <label class="form-label">媛寃?(??</label>
+      <input class="form-input" type="number" id="fieldPrice" placeholder="?? 3500">
     </div>
     <div class="form-group">
-      <label class="form-label">사장 한마디</label>
-      <textarea class="form-textarea" id="fieldDesc" placeholder="이 빵에 대한 한마디를 적어주세요"></textarea>
+      <label class="form-label">?ъ옣 ?쒕쭏??/label>
+      <textarea class="form-textarea" id="fieldDesc" placeholder="??鍮듭뿉 ????쒕쭏?붾? ?곸뼱二쇱꽭??></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">3D 모델 (.glb)</label>
-      <button class="btn-glb" id="glbBtn" onclick="document.getElementById('glbInput').click()">📦 파일 선택</button>
+      <label class="form-label">3D 紐⑤뜽 (.glb)</label>
+      <button class="btn-glb" id="glbBtn" onclick="document.getElementById('glbInput').click()">?벀 ?뚯씪 ?좏깮</button>
       <input type="file" id="glbInput" accept=".glb" onchange="handleGlbInput(this.files[0])">
     </div>
   </div>
   <div class="form-foot">
-    <button class="btn-delete" id="btnDelete" style="display:none" onclick="confirmDeleteBread()">삭제</button>
-    <button class="btn-cancel" onclick="closeBreadForm()">취소</button>
-    <button class="btn-save"   onclick="saveBread()">저장</button>
+    <button class="btn-delete" id="btnDelete" style="display:none" onclick="confirmDeleteBread()">??젣</button>
+    <button class="btn-cancel" onclick="closeBreadForm()">痍⑥냼</button>
+    <button class="btn-save"   onclick="saveBread()">???/button>
   </div>
 </div>
 
 <!-- QR Modal -->
 <div class="overlay" id="qrModal">
   <div class="modal" style="max-width:280px">
-    <div class="modal-title" id="qrModalTitle">QR 코드</div>
+    <div class="modal-title" id="qrModalTitle">QR 肄붾뱶</div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:4px 0 12px">
       <div id="qrSingle"></div>
       <div style="font-size:11px;color:#bbb;text-align:center;word-break:break-all;max-width:240px" id="qrSingleUrl"></div>
-      <button class="btn-copy-link" id="qrCopyBtn">🔗 링크 복사</button>
+      <button class="btn-copy-link" id="qrCopyBtn">?뵕 留곹겕 蹂듭궗</button>
     </div>
-    <button class="btn-modal-cancel" style="width:100%" onclick="document.getElementById('qrModal').classList.remove('show')">닫기</button>
+    <button class="btn-modal-cancel" style="width:100%" onclick="document.getElementById('qrModal').classList.remove('show')">?リ린</button>
   </div>
 </div>
 
 <!-- Mapping Selection Modal -->
 <div class="overlay" id="mappingModal">
   <div class="modal" style="max-width:340px">
-    <div class="modal-title">어떤 빵인가요?</div>
+    <div class="modal-title">?대뼡 鍮듭씤媛??</div>
     <div style="font-size:12px;color:#aaa;margin-bottom:10px;text-align:center">Gemini: "<span id="geminiResultText" style="color:#cc0000;font-weight:bold"></span>"</div>
-    <input class="form-input" id="mappingSearch" placeholder="빵 이름 검색..." oninput="filterMappingList(this.value)" style="margin-bottom:8px">
+    <input class="form-input" id="mappingSearch" placeholder="鍮??대쫫 寃??.." oninput="filterMappingList(this.value)" style="margin-bottom:8px">
     <div id="mappingList" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
     <div class="modal-btns" style="margin-top:10px">
-      <button class="btn-modal-cancel" onclick="closeMappingModal()">취소 (모름)</button>
+      <button class="btn-modal-cancel" onclick="closeMappingModal()">痍⑥냼 (紐⑤쫫)</button>
     </div>
   </div>
 </div>
@@ -638,11 +638,11 @@ input[type=file] { display: none; }
 <!-- Category Modal -->
 <div class="overlay" id="catModal">
   <div class="modal">
-    <div class="modal-title" id="catModalTitle">카테고리 추가</div>
-    <input class="form-input" type="text" id="catNameInput" placeholder="카테고리 이름">
+    <div class="modal-title" id="catModalTitle">移댄뀒怨좊━ 異붽?</div>
+    <input class="form-input" type="text" id="catNameInput" placeholder="移댄뀒怨좊━ ?대쫫">
     <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="closeCatModal()">취소</button>
-      <button class="btn-modal-ok"     onclick="saveCat()">저장</button>
+      <button class="btn-modal-cancel" onclick="closeCatModal()">痍⑥냼</button>
+      <button class="btn-modal-ok"     onclick="saveCat()">???/button>
     </div>
   </div>
 </div>
@@ -657,7 +657,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ── STATE ──────────────────────────────────────────────────────
+// ?? STATE ??????????????????????????????????????????????????????
 let currentUser  = null;
 let currentStore = null;
 let categories   = [];
@@ -669,14 +669,14 @@ let editingBreadId  = null;
 let existingPhotos  = [];   // [{id, url, is_representative}]
 let deletedPhotoIds = [];
 let pendingPhotos   = [];   // [{file, preview}]
-let repPhotoId      = null; // 대표 사진 ID (기존)
-let repPendingIdx   = null; // 대표 사진 인덱스 (신규)
+let repPhotoId      = null; // ????ъ쭊 ID (湲곗〈)
+let repPendingIdx   = null; // ????ъ쭊 ?몃뜳??(?좉퇋)
 let pendingGlbFile  = null;
 
 // cat modal
 let editingCatId = null;
 
-// ── INIT ───────────────────────────────────────────────────────
+// ?? INIT ???????????????????????????????????????????????????????
 async function init() {
   const params    = new URLSearchParams(location.search);
   const storeCode = params.get('store');
@@ -709,7 +709,7 @@ async function afterLogin() {
   showDashboard();
 }
 
-// ── SCREENS ────────────────────────────────────────────────────
+// ?? SCREENS ????????????????????????????????????????????????????
 function showScreen(name) {
   document.getElementById('loading').style.display        = 'none';
   document.getElementById('authScreen').style.display     = name === 'auth'       ? 'flex' : 'none';
@@ -729,7 +729,7 @@ function showDashboard() {
   showScreen('dashboard');
 }
 
-// ── AUTH ───────────────────────────────────────────────────────
+// ?? AUTH ???????????????????????????????????????????????????????
 let authMode = 'login';
 
 function switchAuthTab(mode) {
@@ -738,7 +738,7 @@ function switchAuthTab(mode) {
     t.classList.toggle('active', (i === 0) === (mode === 'login'))
   );
   document.getElementById('authPwConfirm').style.display = mode === 'signup' ? '' : 'none';
-  document.getElementById('btnAuth').textContent = mode === 'login' ? '로그인' : '회원가입';
+  document.getElementById('btnAuth').textContent = mode === 'login' ? '濡쒓렇?? : '?뚯썝媛??;
   document.getElementById('authError').textContent = '';
   document.getElementById('authError').style.color = '#f44336';
 }
@@ -751,13 +751,13 @@ async function handleAuth() {
   const btn     = document.getElementById('btnAuth');
 
   errEl.textContent = ''; errEl.style.color = '#f44336';
-  if (!email || !pw) { errEl.textContent = '이메일과 비밀번호를 입력해주세요'; return; }
+  if (!email || !pw) { errEl.textContent = '?대찓?쇨낵 鍮꾨?踰덊샇瑜??낅젰?댁＜?몄슂'; return; }
   if (authMode === 'signup') {
-    if (pw !== pwConfirm) { errEl.textContent = '비밀번호가 일치하지 않습니다'; return; }
-    if (pw.length < 6)    { errEl.textContent = '비밀번호는 6자 이상이어야 합니다'; return; }
+    if (pw !== pwConfirm) { errEl.textContent = '鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎'; return; }
+    if (pw.length < 6)    { errEl.textContent = '鍮꾨?踰덊샇??6???댁긽?댁뼱???⑸땲??; return; }
   }
 
-  btn.textContent = '처리 중...'; btn.disabled = true;
+  btn.textContent = '泥섎━ 以?..'; btn.disabled = true;
   try {
     let error;
     if (authMode === 'login') {
@@ -766,32 +766,32 @@ async function handleAuth() {
       ({ error } = await sb.auth.signUp({ email, password: pw }));
       if (!error) {
         errEl.style.color = '#4caf50';
-        errEl.textContent = '가입 완료! 이메일 인증 링크를 확인해주세요.';
+        errEl.textContent = '媛???꾨즺! ?대찓???몄쬆 留곹겕瑜??뺤씤?댁＜?몄슂.';
       }
     }
     if (error) throw error;
   } catch (e) {
     errEl.textContent = xlateError(e.message);
   } finally {
-    btn.textContent = authMode === 'login' ? '로그인' : '회원가입';
+    btn.textContent = authMode === 'login' ? '濡쒓렇?? : '?뚯썝媛??;
     btn.disabled = false;
   }
 }
 
 function xlateError(msg) {
-  if (msg.includes('Invalid login'))      return '이메일 또는 비밀번호가 올바르지 않습니다';
-  if (msg.includes('Email not confirmed')) return '이메일 인증이 필요합니다';
-  if (msg.includes('already registered')) return '이미 가입된 이메일입니다';
-  if (msg.includes('rate limit'))         return '잠시 후 다시 시도해주세요';
+  if (msg.includes('Invalid login'))      return '?대찓???먮뒗 鍮꾨?踰덊샇媛 ?щ컮瑜댁? ?딆뒿?덈떎';
+  if (msg.includes('Email not confirmed')) return '?대찓???몄쬆???꾩슂?⑸땲??;
+  if (msg.includes('already registered')) return '?대? 媛?낅맂 ?대찓?쇱엯?덈떎';
+  if (msg.includes('rate limit'))         return '?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂';
   return msg;
 }
 
 async function logout() {
-  if (!confirm('로그아웃 하시겠습니까?')) return;
+  if (!confirm('濡쒓렇?꾩썐 ?섏떆寃좎뒿?덇퉴?')) return;
   await sb.auth.signOut();
 }
 
-// ── STORE ──────────────────────────────────────────────────────
+// ?? STORE ??????????????????????????????????????????????????????
 async function loadStore() {
   const { data } = await sb.from('stores').select('*').eq('owner_id', currentUser.id).maybeSingle();
   currentStore = data;
@@ -799,37 +799,37 @@ async function loadStore() {
 
 async function createStore() {
   const name = document.getElementById('setupName').value.trim();
-  if (!name) { showToast('가게 이름을 입력해주세요', 'error'); return; }
+  if (!name) { showToast('媛寃??대쫫???낅젰?댁＜?몄슂', 'error'); return; }
   const desc = document.getElementById('setupDesc').value.trim();
   const code = Math.random().toString(36).slice(2, 10).toUpperCase();
 
   const { data, error } = await sb.from('stores')
     .insert({ owner_id: currentUser.id, name, description: desc || null, code })
     .select().single();
-  if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+  if (error) { showToast('????ㅽ뙣: ' + error.message, 'error'); return; }
 
   currentStore = data;
   await loadCategories(); await loadBreads();
   showDashboard();
-  showToast('가게가 등록됐습니다 🎉');
+  showToast('媛寃뚭? ?깅줉?먯뒿?덈떎 ?럦');
 }
 
 async function saveStoreSettings() {
   const name = document.getElementById('settingsName').value.trim();
-  if (!name) { showToast('가게 이름을 입력해주세요', 'error'); return; }
+  if (!name) { showToast('媛寃??대쫫???낅젰?댁＜?몄슂', 'error'); return; }
   const desc = document.getElementById('settingsDesc').value.trim();
 
   const { data, error } = await sb.from('stores')
     .update({ name, description: desc || null })
     .eq('id', currentStore.id).select().single();
-  if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+  if (error) { showToast('????ㅽ뙣: ' + error.message, 'error'); return; }
 
   currentStore = data;
   document.getElementById('headerStore').textContent = currentStore.name;
-  showToast('저장됐습니다 ✓');
+  showToast('??λ릱?듬땲????);
 }
 
-// ── CATEGORIES ─────────────────────────────────────────────────
+// ?? CATEGORIES ?????????????????????????????????????????????????
 async function loadCategories() {
   const { data } = await sb.from('categories')
     .select('*').eq('store_id', currentStore.id).order('sort_order');
@@ -838,7 +838,7 @@ async function loadCategories() {
 
 function renderCatFilter() {
   document.getElementById('catFilter').innerHTML =
-    `<button class="cat-chip ${filterCatId === null ? 'active' : ''}" onclick="setCatFilter(null)">전체</button>` +
+    `<button class="cat-chip ${filterCatId === null ? 'active' : ''}" onclick="setCatFilter(null)">?꾩껜</button>` +
     categories.map(c =>
       `<button class="cat-chip ${filterCatId === c.id ? 'active' : ''}" onclick="setCatFilter('${c.id}')">${c.name}</button>`
     ).join('');
@@ -847,7 +847,7 @@ function renderCatFilter() {
 function renderCatList() {
   const list = document.getElementById('catList');
   if (!categories.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📂</div><div class="empty-text">카테고리가 없습니다</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">?뱛</div><div class="empty-text">移댄뀒怨좊━媛 ?놁뒿?덈떎</div></div>';
     return;
   }
   list.innerHTML = categories.map((c, i) => `
@@ -856,13 +856,13 @@ function renderCatList() {
       <span class="cat-name-text">${c.name}</span>
       <div class="cat-actions">
         ${i > 0
-          ? `<button class="btn-icon" onclick="moveCat('${c.id}',-1)">↑</button>`
+          ? `<button class="btn-icon" onclick="moveCat('${c.id}',-1)">??/button>`
           : `<span class="btn-icon-ph"></span>`}
         ${i < categories.length - 1
-          ? `<button class="btn-icon" onclick="moveCat('${c.id}',1)">↓</button>`
+          ? `<button class="btn-icon" onclick="moveCat('${c.id}',1)">??/button>`
           : `<span class="btn-icon-ph"></span>`}
-        <button class="btn-icon" onclick="openCatModal('${c.id}')">✏️</button>
-        <button class="btn-icon red" onclick="deleteCat('${c.id}')">🗑️</button>
+        <button class="btn-icon" onclick="openCatModal('${c.id}')">?륅툘</button>
+        <button class="btn-icon red" onclick="deleteCat('${c.id}')">?뿊截?/button>
       </div>
     </div>
   `).join('');
@@ -875,7 +875,7 @@ function setCatFilter(catId) {
 function openCatModal(catId) {
   editingCatId = catId;
   const cat = catId ? categories.find(c => c.id === catId) : null;
-  document.getElementById('catModalTitle').textContent = catId ? '카테고리 수정' : '카테고리 추가';
+  document.getElementById('catModalTitle').textContent = catId ? '移댄뀒怨좊━ ?섏젙' : '移댄뀒怨좊━ 異붽?';
   document.getElementById('catNameInput').value = cat ? cat.name : '';
   document.getElementById('catModal').classList.add('show');
   setTimeout(() => document.getElementById('catNameInput').focus(), 80);
@@ -888,7 +888,7 @@ function closeCatModal() {
 
 async function saveCat() {
   const name = document.getElementById('catNameInput').value.trim();
-  if (!name) { showToast('카테고리 이름을 입력해주세요', 'error'); return; }
+  if (!name) { showToast('移댄뀒怨좊━ ?대쫫???낅젰?댁＜?몄슂', 'error'); return; }
 
   let error;
   if (editingCatId) {
@@ -897,25 +897,25 @@ async function saveCat() {
     const nextOrder = categories.length ? Math.max(...categories.map(c => c.sort_order)) + 1 : 0;
     ({ error } = await sb.from('categories').insert({ store_id: currentStore.id, name, sort_order: nextOrder }));
   }
-  if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+  if (error) { showToast('????ㅽ뙣: ' + error.message, 'error'); return; }
 
   await loadCategories();
   renderCatList(); renderCatFilter(); renderBreadGrid();
   closeCatModal();
-  showToast(editingCatId ? '수정됐습니다 ✓' : '카테고리가 추가됐습니다');
+  showToast(editingCatId ? '?섏젙?먯뒿?덈떎 ?? : '移댄뀒怨좊━媛 異붽??먯뒿?덈떎');
 }
 
 async function deleteCat(catId) {
   const cat = categories.find(c => c.id === catId);
-  if (!confirm(`"${cat.name}" 카테고리를 삭제하시겠습니까?\n이 카테고리의 빵은 카테고리 없음으로 이동됩니다.`)) return;
+  if (!confirm(`"${cat.name}" 移댄뀒怨좊━瑜???젣?섏떆寃좎뒿?덇퉴?\n??移댄뀒怨좊━??鍮듭? 移댄뀒怨좊━ ?놁쓬?쇰줈 ?대룞?⑸땲??`)) return;
 
   const { error } = await sb.from('categories').delete().eq('id', catId);
-  if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+  if (error) { showToast('??젣 ?ㅽ뙣: ' + error.message, 'error'); return; }
   if (filterCatId === catId) filterCatId = null;
 
   await loadCategories();
   renderCatList(); renderCatFilter(); renderBreadGrid();
-  showToast('삭제됐습니다');
+  showToast('??젣?먯뒿?덈떎');
 }
 
 async function moveCat(catId, dir) {
@@ -932,7 +932,7 @@ async function moveCat(catId, dir) {
   renderCatList(); renderCatFilter();
 }
 
-// ── BREADS ─────────────────────────────────────────────────────
+// ?? BREADS ?????????????????????????????????????????????????????
 async function loadBreads() {
   const { data } = await sb.from('breads')
     .select('*, bread_photos(*)')
@@ -947,8 +947,8 @@ function renderBreadGrid() {
 
   if (!filtered.length) {
     grid.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">🥐</div>
-      <div class="empty-text">등록된 빵이 없습니다<br>＋ 버튼으로 추가해보세요</div>
+      <div class="empty-icon">?쪖</div>
+      <div class="empty-text">?깅줉??鍮듭씠 ?놁뒿?덈떎<br>竊?踰꾪듉?쇰줈 異붽??대낫?몄슂</div>
     </div>`;
     return;
   }
@@ -956,9 +956,9 @@ function renderBreadGrid() {
   grid.innerHTML = filtered.map(bread => {
     const photo   = bread.bread_photos?.[0]?.photo_url;
     const catName = categories.find(c => c.id === bread.category_id)?.name || '';
-    const price   = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+    const price   = bread.price != null ? bread.price.toLocaleString() + '?? : '';
     return `<div class="bread-card" onclick="openBreadForm('${bread.id}')">
-      <div class="bread-thumb">${photo ? `<img src="${photo}" loading="lazy">` : '🥐'}</div>
+      <div class="bread-thumb">${photo ? `<img src="${photo}" loading="lazy">` : '?쪖'}</div>
       <div class="bread-info">
         <div class="bread-name">${bread.name}</div>
         ${price   ? `<div class="bread-price">${price}</div>`   : ''}
@@ -968,7 +968,7 @@ function renderBreadGrid() {
   }).join('');
 }
 
-// ── BREAD FORM ─────────────────────────────────────────────────
+// ?? BREAD FORM ?????????????????????????????????????????????????
 async function openBreadForm(breadId) {
   editingBreadId  = breadId;
   pendingPhotos   = [];
@@ -980,24 +980,28 @@ async function openBreadForm(breadId) {
 
   const bread = breadId ? breads.find(b => b.id === breadId) : null;
 
-  document.getElementById('breadFormTitle').textContent  = bread ? '빵 수정' : '빵 추가';
+  document.getElementById('breadFormTitle').textContent  = bread ? '鍮??섏젙' : '鍮?異붽?';
   document.getElementById('fieldName').value             = bread ? bread.name : '';
   document.getElementById('fieldPrice').value            = bread?.price != null ? bread.price : '';
   document.getElementById('fieldDesc').value             = bread?.description || '';
-  document.getElementById('glbBtn').textContent          = bread?.glb_url ? '📦 파일 변경' : '📦 파일 선택';
+  document.getElementById('glbBtn').textContent          = bread?.glb_url ? '?벀 ?뚯씪 蹂寃? : '?벀 ?뚯씪 ?좏깮';
   document.getElementById('btnDelete').style.display     = bread ? '' : 'none';
   document.getElementById('photoCamera').value           = '';
   document.getElementById('photoGallery').value          = '';
 
   const defaultCat = bread ? bread.category_id : filterCatId;
   const sel = document.getElementById('fieldCat');
-  sel.innerHTML = '<option value="">카테고리 없음</option>' +
+  sel.innerHTML = '<option value="">移댄뀒怨좊━ ?놁쓬</option>' +
     categories.map(c => `<option value="${c.id}"${defaultCat === c.id ? ' selected' : ''}>${c.name}</option>`).join('');
 
-  // 사진은 항상 DB에서 직접 조회
+  // ??癒쇱? ?닿린
+  document.getElementById('photoStrip').innerHTML = '<div style="font-size:12px;color:#bbb;padding:4px">?ъ쭊 遺덈윭?ㅻ뒗 以?..</div>';
+  document.getElementById('breadForm').classList.add('show');
+
+  // ?ъ쭊 DB?먯꽌 吏곸젒 議고쉶
   if (breadId) {
-    const { data: photos } = await sb.from('bread_photos')
-      .select('*').eq('bread_id', breadId).order('created_at');
+    const { data: photos, error } = await sb.from('bread_photos')
+      .select('id, photo_url, is_representative').eq('bread_id', breadId).order('created_at');
     if (photos?.length) {
       existingPhotos = photos.map(p => ({ id: p.id, url: p.photo_url, is_representative: p.is_representative }));
       repPhotoId = existingPhotos.find(p => p.is_representative)?.id || existingPhotos[0]?.id || null;
@@ -1005,7 +1009,6 @@ async function openBreadForm(breadId) {
   }
 
   renderPhotoStrip();
-  document.getElementById('breadForm').classList.add('show');
 }
 
 function closeBreadForm() {
@@ -1034,20 +1037,20 @@ function renderPhotoStrip() {
       const isRep = p.id === repPhotoId;
       return `<div class="photo-wrap${isRep ? ' is-rep' : ''}" id="pw_${p.id}">
         <img src="${p.url}" alt="">
-        ${isRep ? '<div class="photo-rep-badge">⭐</div>' : ''}
-        <button class="btn-photo-rm" onclick="rmExistingPhoto('${p.id}')">✕</button>
+        ${isRep ? '<div class="photo-rep-badge">狩?/div>' : ''}
+        <button class="btn-photo-rm" onclick="rmExistingPhoto('${p.id}')">??/button>
       </div>`;
     }).join('') +
     pendingPhotos.map((p, i) => {
       const isRep = repPhotoId === null && repPendingIdx === i;
       return `<div class="photo-wrap${isRep ? ' is-rep' : ''}" id="ppw_${i}">
         <img src="${p.preview}" alt="">
-        ${isRep ? '<div class="photo-rep-badge">⭐</div>' : ''}
-        <button class="btn-photo-rm" onclick="rmPendingPhoto(${i})">✕</button>
+        ${isRep ? '<div class="photo-rep-badge">狩?/div>' : ''}
+        <button class="btn-photo-rm" onclick="rmPendingPhoto(${i})">??/button>
       </div>`;
     }).join('');
 
-  // 이벤트 연결
+  // ?대깽???곌껐
   kept.forEach(p => {
     const el = document.getElementById('pw_' + p.id);
     if (!el) return;
@@ -1066,7 +1069,7 @@ function setRepPhoto(existingId, pendingIdx) {
   repPhotoId    = existingId;
   repPendingIdx = pendingIdx;
   renderPhotoStrip();
-  showToast('대표 사진으로 설정됐습니다 ⭐');
+  showToast('????ъ쭊?쇰줈 ?ㅼ젙?먯뒿?덈떎 狩?);
 }
 
 function setupPhotoSwipeDel(el, onDelete) {
@@ -1125,19 +1128,19 @@ function rmPendingPhoto(idx) {
 function handleGlbInput(file) {
   if (!file) return;
   pendingGlbFile = file;
-  document.getElementById('glbBtn').textContent = `📦 ${file.name}`;
+  document.getElementById('glbBtn').textContent = `?벀 ${file.name}`;
 }
 
 async function saveBread() {
   const name = document.getElementById('fieldName').value.trim();
-  if (!name) { showToast('빵 이름을 입력해주세요', 'error'); return; }
+  if (!name) { showToast('鍮??대쫫???낅젰?댁＜?몄슂', 'error'); return; }
 
   const priceRaw = document.getElementById('fieldPrice').value;
   const price    = priceRaw !== '' ? parseInt(priceRaw, 10) : null;
   const desc     = document.getElementById('fieldDesc').value.trim();
   const catId    = document.getElementById('fieldCat').value || null;
 
-  showToast('저장 중...');
+  showToast('???以?..');
 
   try {
     let breadId = editingBreadId;
@@ -1155,25 +1158,24 @@ async function saveBread() {
       breadId = data.id;
     }
 
-    // 삭제된 사진 DB 제거 (스토리지 파일은 별도 정리)
+    // ??젣???ъ쭊 DB ?쒓굅 (?ㅽ넗由ъ? ?뚯씪? 蹂꾨룄 ?뺣━)
     for (const photoId of deletedPhotoIds) {
       await sb.from('bread_photos').delete().eq('id', photoId);
     }
 
-    // 신규 사진 업로드
-    let uploadedIds = [];
+    // ?좉퇋 ?ъ쭊 ?낅줈??    let uploadedIds = [];
     for (let i = 0; i < pendingPhotos.length; i++) {
       const { file } = pendingPhotos[i];
       const ext  = file.name.split('.').pop().toLowerCase() || 'jpg';
       const path = `${currentStore.id}/${breadId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: upErr } = await sb.storage.from('bread-photos').upload(path, file);
-      if (upErr) { console.warn('사진 업로드 실패:', upErr.message); continue; }
+      if (upErr) { console.warn('?ъ쭊 ?낅줈???ㅽ뙣:', upErr.message); continue; }
       const { data: { publicUrl } } = sb.storage.from('bread-photos').getPublicUrl(path);
       const { data: rec } = await sb.from('bread_photos').insert({ bread_id: breadId, photo_url: publicUrl }).select().single();
       if (rec) uploadedIds.push({ idx: i, id: rec.id });
     }
 
-    // 대표 사진 설정
+    // ????ъ쭊 ?ㅼ젙
     await sb.from('bread_photos').update({ is_representative: false }).eq('bread_id', breadId);
     let finalRepId = repPhotoId;
     if (!finalRepId && repPendingIdx !== null) {
@@ -1186,8 +1188,7 @@ async function saveBread() {
     }
     if (finalRepId) await sb.from('bread_photos').update({ is_representative: true }).eq('id', finalRepId);
 
-    // GLB 업로드
-    if (pendingGlbFile) {
+    // GLB ?낅줈??    if (pendingGlbFile) {
       const path = `${currentStore.id}/${breadId}/model.glb`;
       const { error: glbErr } = await sb.storage.from('bread-models').upload(path, pendingGlbFile, { upsert: true });
       if (!glbErr) {
@@ -1199,26 +1200,26 @@ async function saveBread() {
     await loadBreads();
     renderBreadGrid();
     closeBreadForm();
-    showToast(editingBreadId ? '수정됐습니다 ✓' : '빵이 등록됐습니다 🥐');
+    showToast(editingBreadId ? '?섏젙?먯뒿?덈떎 ?? : '鍮듭씠 ?깅줉?먯뒿?덈떎 ?쪖');
   } catch (e) {
-    showToast('저장 실패: ' + e.message, 'error');
+    showToast('????ㅽ뙣: ' + e.message, 'error');
   }
 }
 
 async function confirmDeleteBread() {
   const bread = breads.find(b => b.id === editingBreadId);
-  if (!bread || !confirm(`"${bread.name}"을 삭제하시겠습니까?`)) return;
+  if (!bread || !confirm(`"${bread.name}"????젣?섏떆寃좎뒿?덇퉴?`)) return;
 
   const { error } = await sb.from('breads').delete().eq('id', editingBreadId);
-  if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+  if (error) { showToast('??젣 ?ㅽ뙣: ' + error.message, 'error'); return; }
 
   await loadBreads();
   renderBreadGrid();
   closeBreadForm();
-  showToast('삭제됐습니다');
+  showToast('??젣?먯뒿?덈떎');
 }
 
-// ── NAV ────────────────────────────────────────────────────────
+// ?? NAV ????????????????????????????????????????????????????????
 function switchView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1232,7 +1233,7 @@ function switchView(view) {
   if (view === 'Store')      generateQR();
 }
 
-// ── TOAST ──────────────────────────────────────────────────────
+// ?? TOAST ??????????????????????????????????????????????????????
 let toastTimer = null;
 function showToast(msg, type = '') {
   const el = document.getElementById('toast');
@@ -1242,7 +1243,7 @@ function showToast(msg, type = '') {
   toastTimer = setTimeout(() => { el.className = ''; }, 2400);
 }
 
-// ── QR / LINK ─────────────────────────────────────────────────
+// ?? QR / LINK ?????????????????????????????????????????????????
 function storeUrl(mode) {
   const base = location.origin + location.pathname + '?store=' + currentStore.code;
   return mode === 'staff' ? base + '&mode=staff' : base;
@@ -1261,12 +1262,12 @@ async function makeQR(elId, url) {
 
 async function openQrModal(mode) {
   const url      = storeUrl(mode);
-  const titles   = { customer: '👤 고객용 QR', staff: '👷 직원용 QR' };
-  document.getElementById('qrModalTitle').textContent = titles[mode] || 'QR 코드';
+  const titles   = { customer: '?뫀 怨좉컼??QR', staff: '?뫕 吏곸썝??QR' };
+  document.getElementById('qrModalTitle').textContent = titles[mode] || 'QR 肄붾뱶';
   document.getElementById('qrSingleUrl').textContent  = url;
   document.getElementById('qrCopyBtn').onclick = async () => {
-    try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
-    catch { showToast('복사 실패', 'error'); }
+    try { await navigator.clipboard.writeText(url); showToast('留곹겕 蹂듭궗?먯뒿?덈떎 ??); }
+    catch { showToast('蹂듭궗 ?ㅽ뙣', 'error'); }
   };
   document.getElementById('qrModal').classList.add('show');
   await makeQR('qrSingle', url);
@@ -1274,27 +1275,27 @@ async function openQrModal(mode) {
 
 function generateQR() { /* no-op */ }
 
-// 직원 화면에서 고객 QR 보여주기
+// 吏곸썝 ?붾㈃?먯꽌 怨좉컼 QR 蹂댁뿬二쇨린
 let empStoreCode = '';
 async function openEmpCustomerQR() {
   const url = location.origin + location.pathname + '?store=' + empStoreCode;
-  document.getElementById('qrModalTitle').textContent = '👤 고객용 QR';
+  document.getElementById('qrModalTitle').textContent = '?뫀 怨좉컼??QR';
   document.getElementById('qrSingleUrl').textContent  = url;
   document.getElementById('qrCopyBtn').onclick = async () => {
-    try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
-    catch { showToast('복사 실패', 'error'); }
+    try { await navigator.clipboard.writeText(url); showToast('留곹겕 蹂듭궗?먯뒿?덈떎 ??); }
+    catch { showToast('蹂듭궗 ?ㅽ뙣', 'error'); }
   };
   document.getElementById('qrModal').classList.add('show');
   await makeQR('qrSingle', url);
 }
 
-// ── CUSTOMER SCREEN ────────────────────────────────────────────
+// ?? CUSTOMER SCREEN ????????????????????????????????????????????
 let customerStream = null;
 
 async function loadCustomerScreen(code) {
   const { data: store } = await sb.from('stores').select('*').eq('code', code).maybeSingle();
   if (!store) {
-    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">가게를 찾을 수 없습니다</div>';
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">媛寃뚮? 李얠쓣 ???놁뒿?덈떎</div>';
     return;
   }
   empStore = store;
@@ -1306,7 +1307,7 @@ async function loadCustomerScreen(code) {
   empBreads = brs || [];
 
   document.getElementById('customerStoreName').textContent = store.name;
-  document.title = store.name + ' — BBangWay';
+  document.title = store.name + ' ??BBangWay';
 
   showScreen('customer');
   await startCustomerCamera();
@@ -1324,11 +1325,11 @@ async function startCustomerCamera() {
 }
 
 async function captureAndRecognize() {
-  if (!window.GEMINI_KEY) { setVfHint('API 키가 설정되지 않았습니다'); return; }
+  if (!window.GEMINI_KEY) { setVfHint('API ?ㅺ? ?ㅼ젙?섏? ?딆븯?듬땲??); return; }
 
   const btn = document.getElementById('btnCapture');
   btn.classList.add('scanning'); btn.disabled = true;
-  setVfHint('🔍 인식 중...');
+  setVfHint('?뵇 ?몄떇 以?..');
 
   const video  = document.getElementById('customerVideo');
   const canvas = document.getElementById('captureCanvas');
@@ -1344,14 +1345,14 @@ async function captureAndRecognize() {
 
       if (mapping) {
         showCustomerResult(mapping.breads);
-        setVfHint('빵을 카메라에 비추고 버튼을 누르세요');
+        setVfHint('鍮듭쓣 移대찓?쇱뿉 鍮꾩텛怨?踰꾪듉???꾨Ⅴ?몄슂');
       } else {
-        setVfHint('인식하지 못했어요. 더 가까이 대보세요 🥐');
-        setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
+        setVfHint('?몄떇?섏? 紐삵뻽?댁슂. ??媛源뚯씠 ?蹂댁꽭???쪖');
+        setTimeout(() => setVfHint('鍮듭쓣 移대찓?쇱뿉 鍮꾩텛怨?踰꾪듉???꾨Ⅴ?몄슂'), 2500);
       }
     } catch(e) {
-      setVfHint('오류가 발생했습니다. 다시 시도해주세요.');
-      setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
+      setVfHint('?ㅻ쪟媛 諛쒖깮?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.');
+      setTimeout(() => setVfHint('鍮듭쓣 移대찓?쇱뿉 鍮꾩텛怨?踰꾪듉???꾨Ⅴ?몄슂'), 2500);
     }
     btn.classList.remove('scanning'); btn.disabled = false;
   }, 'image/jpeg', 0.85);
@@ -1369,7 +1370,7 @@ function showCustomerResult(bread) {
   else          { photoEl.style.display = 'none'; }
 
   document.getElementById('resultName').textContent  = bread.name;
-  document.getElementById('resultPrice').textContent = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+  document.getElementById('resultPrice').textContent = bread.price != null ? bread.price.toLocaleString() + '?? : '';
   document.getElementById('resultDesc').textContent  = bread.description || '';
   document.getElementById('resultCard').classList.add('show');
 }
@@ -1386,11 +1387,11 @@ async function handleFallbackPhoto(file) {
     const geminiResult = await callGeminiGeneric(base64, file.type || 'image/jpeg');
     const mapping     = await lookupMapping(geminiResult);
     if (mapping) showCustomerResult(mapping.breads);
-    else alert('인식하지 못했어요. 다시 시도해주세요.');
-  } catch(e) { alert('오류: ' + e.message); }
+    else alert('?몄떇?섏? 紐삵뻽?댁슂. ?ㅼ떆 ?쒕룄?댁＜?몄슂.');
+  } catch(e) { alert('?ㅻ쪟: ' + e.message); }
 }
 
-// ── EMPLOYEE SCREEN ────────────────────────────────────────────
+// ?? EMPLOYEE SCREEN ????????????????????????????????????????????
 let empStore      = null;
 let empCategories = [];
 let empBreads     = [];
@@ -1405,7 +1406,7 @@ async function loadEmployeeScreen(code) {
   const empMode = new URLSearchParams(location.search).get('mode') || 'customer';
 
   const { data: store } = await sb.from('stores').select('*').eq('code', code).maybeSingle();
-  if (!store) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">가게를 찾을 수 없습니다</div>'; return; }
+  if (!store) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999">媛寃뚮? 李얠쓣 ???놁뒿?덈떎</div>'; return; }
   empStore = store;
 
   const [{ data: cats }, { data: brs }] = await Promise.all([
@@ -1416,10 +1417,10 @@ async function loadEmployeeScreen(code) {
   empBreads     = brs  || [];
 
   empStoreCode = code;
-  const modeLabel = empMode === 'staff' ? ' — 직원' : '';
+  const modeLabel = empMode === 'staff' ? ' ??吏곸썝' : '';
   document.getElementById('empStoreName').textContent = store.name + modeLabel;
   document.getElementById('empQrBtn').style.display   = empMode === 'staff' ? '' : 'none';
-  document.title = store.name + ' — BBangWay';
+  document.title = store.name + ' ??BBangWay';
   buildLearnList();
   renderEmpCatBar();
   renderLearnCard();
@@ -1462,10 +1463,10 @@ function stopStaffCamera() {
 }
 
 async function staffCaptureAndRecognize() {
-  if (!window.GEMINI_KEY) { setStaffHint('API 키가 설정되지 않았습니다'); return; }
+  if (!window.GEMINI_KEY) { setStaffHint('API ?ㅺ? ?ㅼ젙?섏? ?딆븯?듬땲??); return; }
   const btn = document.getElementById('btnStaffCapture');
   btn.classList.add('scanning'); btn.disabled = true;
-  setStaffHint('🔍 인식 중...');
+  setStaffHint('?뵇 ?몄떇 以?..');
 
   const video  = document.getElementById('staffVideo');
   const canvas = document.getElementById('staffCanvas');
@@ -1480,14 +1481,14 @@ async function staffCaptureAndRecognize() {
       const mapping     = await lookupMapping(geminiResult);
       if (mapping) {
         showStaffResult(mapping.breads);
-        setStaffHint('빵을 가운데에 맞추고 버튼을 누르세요');
+        setStaffHint('鍮듭쓣 媛?대뜲??留욎텛怨?踰꾪듉???꾨Ⅴ?몄슂');
       } else {
-        setStaffHint(`"${geminiResult}" — 매핑 없음. 아래에서 선택해주세요`);
+        setStaffHint(`"${geminiResult}" ??留ㅽ븨 ?놁쓬. ?꾨옒?먯꽌 ?좏깮?댁＜?몄슂`);
         pendingGeminiResult = geminiResult;
         openMappingModal(geminiResult);
       }
     } catch(e) {
-      setStaffHint('오류가 발생했습니다. 다시 시도해주세요.');
+      setStaffHint('?ㅻ쪟媛 諛쒖깮?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.');
     }
     btn.classList.remove('scanning'); btn.disabled = false;
   }, 'image/jpeg', 0.85);
@@ -1496,7 +1497,7 @@ async function staffCaptureAndRecognize() {
 function setStaffHint(msg) { document.getElementById('staffVfHint').textContent = msg; }
 
 function showStaffResult(bread) {
-  const price = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+  const price = bread.price != null ? bread.price.toLocaleString() + '?? : '';
   document.getElementById('staffResultName').textContent  = bread.name;
   document.getElementById('staffResultPrice').textContent = price;
   document.getElementById('staffResultDesc').textContent  = bread.description || '';
@@ -1505,10 +1506,10 @@ function showStaffResult(bread) {
 
 function closeStaffResult() {
   document.getElementById('staffResultCard').classList.remove('show');
-  setStaffHint('빵을 가운데에 맞추고 버튼을 누르세요');
+  setStaffHint('鍮듭쓣 媛?대뜲??留욎텛怨?踰꾪듉???꾨Ⅴ?몄슂');
 }
 
-// ── LEARNING ───────────────────────────────────────────────────
+// ?? LEARNING ???????????????????????????????????????????????????
 function buildLearnList() {
   learnList = learnCatId
     ? empBreads.filter(b => b.category_id === learnCatId)
@@ -1518,7 +1519,7 @@ function buildLearnList() {
 
 function renderEmpCatBar() {
   document.getElementById('empCatBar').innerHTML =
-    `<button class="cat-chip ${learnCatId === null ? 'active' : ''}" onclick="setLearnCat(null)">전체</button>` +
+    `<button class="cat-chip ${learnCatId === null ? 'active' : ''}" onclick="setLearnCat(null)">?꾩껜</button>` +
     empCategories.map(c =>
       `<button class="cat-chip ${learnCatId === c.id ? 'active' : ''}" onclick="setLearnCat('${c.id}')">${c.name}</button>`
     ).join('');
@@ -1543,7 +1544,7 @@ function renderLearnCard() {
   const prog = document.getElementById('learnProg');
 
   if (!learnList.length) {
-    card.innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:14px">등록된 빵이 없습니다</div>';
+    card.innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:14px">?깅줉??鍮듭씠 ?놁뒿?덈떎</div>';
     prog.textContent = '0 / 0';
     prev.disabled = true; next.disabled = true;
     return;
@@ -1552,10 +1553,10 @@ function renderLearnCard() {
   const b       = learnList[learnIdx];
   const photo   = b.bread_photos?.[0]?.photo_url;
   const catName = empCategories.find(c => c.id === b.category_id)?.name || '';
-  const price   = b.price != null ? b.price.toLocaleString() + '원' : '';
+  const price   = b.price != null ? b.price.toLocaleString() + '?? : '';
 
   card.innerHTML = `
-    <div class="learn-photo">${photo ? `<img src="${photo}">` : '🥐'}</div>
+    <div class="learn-photo">${photo ? `<img src="${photo}">` : '?쪖'}</div>
     <div class="learn-info">
       <div class="learn-name">${b.name}</div>
       ${price   ? `<div class="learn-price">${price}</div>` : ''}
@@ -1568,7 +1569,7 @@ function renderLearnCard() {
   next.disabled     = learnIdx === learnList.length - 1;
 }
 
-// ── QUIZ ───────────────────────────────────────────────────────
+// ?? QUIZ ???????????????????????????????????????????????????????
 let quizPool = [];
 
 function startQuiz() {
@@ -1579,13 +1580,13 @@ function startQuiz() {
 }
 
 function updateQuizScore() {
-  document.getElementById('qScoreTxt').textContent  = `정답 ${qCorrect} / 오답 ${qWrong}`;
-  document.getElementById('qStreakTxt').textContent  = `🔥 ${qStreak}연속`;
+  document.getElementById('qScoreTxt').textContent  = `?뺣떟 ${qCorrect} / ?ㅻ떟 ${qWrong}`;
+  document.getElementById('qStreakTxt').textContent  = `?뵦 ${qStreak}?곗냽`;
 }
 
 function nextQuestion() {
   if (quizPool.length < 2) {
-    document.getElementById('qImgBox').innerHTML = '<div style="color:#ccc;font-size:13px;padding:20px;text-align:center">사진이 등록된 빵이 2개 이상 필요합니다</div>';
+    document.getElementById('qImgBox').innerHTML = '<div style="color:#ccc;font-size:13px;padding:20px;text-align:center">?ъ쭊???깅줉??鍮듭씠 2媛??댁긽 ?꾩슂?⑸땲??/div>';
     document.getElementById('qOpts').innerHTML = '';
     return;
   }
@@ -1634,7 +1635,7 @@ function handleAnswer(selectedId, correctId) {
   setTimeout(nextQuestion, 1400);
 }
 
-// ── BREAD RECOGNITION ─────────────────────────────────────────
+// ?? BREAD RECOGNITION ?????????????????????????????????????????
 let pendingGeminiResult = '';
 
 async function handleRecogPhoto(file) {
@@ -1644,11 +1645,11 @@ async function handleRecogPhoto(file) {
   document.getElementById('recogPreview').innerHTML = `<img src="${URL.createObjectURL(file)}">`;
   const resultEl = document.getElementById('recogResult');
   resultEl.className = 'recog-result loading';
-  resultEl.innerHTML = '🔍 인식 중...';
+  resultEl.innerHTML = '?뵇 ?몄떇 以?..';
 
   if (!window.GEMINI_KEY) {
     resultEl.className = 'recog-result';
-    resultEl.innerHTML = '<div class="recog-no-match">API 키가 설정되지 않았습니다</div>';
+    resultEl.innerHTML = '<div class="recog-no-match">API ?ㅺ? ?ㅼ젙?섏? ?딆븯?듬땲??/div>';
     return;
   }
 
@@ -1656,29 +1657,28 @@ async function handleRecogPhoto(file) {
     const base64   = await fileToBase64(file);
     const mimeType = file.type || 'image/jpeg';
 
-    // 1. Gemini에게 일반 이름 받기
+    // 1. Gemini?먭쾶 ?쇰컲 ?대쫫 諛쏄린
     const geminiResult = await callGeminiGeneric(base64, mimeType);
     pendingGeminiResult = geminiResult;
 
-    // 2. 매핑 테이블 검색
-    const mapping = await lookupMapping(geminiResult);
+    // 2. 留ㅽ븨 ?뚯씠釉?寃??    const mapping = await lookupMapping(geminiResult);
 
     if (mapping) {
       showBreadResult(mapping.breads, resultEl);
     } else {
-      // 3. 매핑 없으면 수동 선택
+      // 3. 留ㅽ븨 ?놁쑝硫??섎룞 ?좏깮
       resultEl.className = 'recog-result';
-      resultEl.innerHTML = `<div class="recog-no-match">처음 보는 빵이에요!<br><small style="color:#bbb">Gemini: "${geminiResult}"</small></div>`;
+      resultEl.innerHTML = `<div class="recog-no-match">泥섏쓬 蹂대뒗 鍮듭씠?먯슂!<br><small style="color:#bbb">Gemini: "${geminiResult}"</small></div>`;
       openMappingModal(geminiResult);
     }
   } catch (e) {
     resultEl.className = 'recog-result';
-    resultEl.innerHTML = `<div class="recog-no-match">오류: ${e.message}</div>`;
+    resultEl.innerHTML = `<div class="recog-no-match">?ㅻ쪟: ${e.message}</div>`;
   }
 }
 
 async function callGeminiGeneric(base64, mimeType) {
-  const prompt = '사진에서 중앙에 있거나 가장 크게 보이는 빵 하나를 파악해줘. 포장지, 라벨, 가격표에 빵 이름이 적혀 있으면 그 이름을 그대로 답해줘. 글씨가 없으면 외형을 보고 종류를 한국어로 짧게 답해줘. 예: 소보로빵, 단팥빵, 크림빵, 크로와상. 이름만 답해.';
+  const prompt = '?ъ쭊?먯꽌 以묒븰???덇굅??媛???ш쾶 蹂댁씠??鍮??섎굹瑜??뚯븙?댁쨾. ?ъ옣吏, ?쇰꺼, 媛寃⑺몴??鍮??대쫫???곹? ?덉쑝硫?洹??대쫫??洹몃?濡??듯빐以? 湲?④? ?놁쑝硫??명삎??蹂닿퀬 醫낅쪟瑜??쒓뎅?대줈 吏㏐쾶 ?듯빐以? ?? ?뚮낫濡쒕뭇, ?⑦뙠鍮? ?щ┝鍮? ?щ줈??? ?대쫫留??듯빐.';
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${window.GEMINI_KEY}`,
     { method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1710,7 +1710,7 @@ async function saveMapping(geminiResult, breadId) {
 }
 
 function showBreadResult(bread, resultEl) {
-  const price = bread.price != null ? bread.price.toLocaleString() + '원' : '';
+  const price = bread.price != null ? bread.price.toLocaleString() + '?? : '';
   resultEl.className = 'recog-result';
   resultEl.innerHTML =
     `<div class="recog-bread-name">${bread.name}</div>` +
@@ -1718,7 +1718,7 @@ function showBreadResult(bread, resultEl) {
     (bread.description ? `<div class="recog-bread-desc">${bread.description}</div>` : '');
 }
 
-// ── MAPPING MODAL ──────────────────────────────────────────────
+// ?? MAPPING MODAL ??????????????????????????????????????????????
 function openMappingModal(geminiResult) {
   document.getElementById('geminiResultText').textContent = geminiResult;
   document.getElementById('mappingSearch').value = '';
@@ -1734,11 +1734,11 @@ function filterMappingList(q) {
   const list     = document.getElementById('mappingList');
   const filtered = q ? empBreads.filter(b => b.name.includes(q)) : empBreads;
   if (!filtered.length) {
-    list.innerHTML = '<div style="text-align:center;color:#ccc;padding:12px;font-size:13px">검색 결과 없음</div>';
+    list.innerHTML = '<div style="text-align:center;color:#ccc;padding:12px;font-size:13px">寃??寃곌낵 ?놁쓬</div>';
     return;
   }
   list.innerHTML = filtered.map(b => {
-    const price = b.price != null ? ` (${b.price.toLocaleString()}원)` : '';
+    const price = b.price != null ? ` (${b.price.toLocaleString()}??` : '';
     return `<button class="mapping-bread-btn" onclick="selectMapping('${b.id}')">${b.name}<span style="font-weight:normal;color:#aaa;font-size:11px">${price}</span></button>`;
   }).join('');
 }
@@ -1749,7 +1749,7 @@ async function selectMapping(breadId) {
   if (!bread) return;
   await saveMapping(pendingGeminiResult, breadId);
   showBreadResult(bread, document.getElementById('recogResult'));
-  showToast(`"${pendingGeminiResult}" → "${bread.name}" 매핑 저장됐습니다 ✓`);
+  showToast(`"${pendingGeminiResult}" ??"${bread.name}" 留ㅽ븨 ??λ릱?듬땲????);
 }
 
 function fileToBase64(file) {
@@ -1761,7 +1761,7 @@ function fileToBase64(file) {
   });
 }
 
-// ── START ──────────────────────────────────────────────────────
+// ?? START ??????????????????????????????????????????????????????
 init();
 
 if ('serviceWorker' in navigator) {
@@ -1770,3 +1770,4 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
