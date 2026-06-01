@@ -13,7 +13,6 @@
 <link rel="manifest" href="manifest.json">
 <script>window.GEMINI_KEY = '';</script>
 <script src="gemini-config.js" onerror="console.log('gemini-config.js not found')"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -965,10 +964,10 @@ function empUrl() {
 }
 
 function generateQR() {
-  const box = document.getElementById('qrCanvas');
-  box.innerHTML = '';
-  new QRCode(box, { text: empUrl(), width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
-  document.getElementById('qrUrl').textContent = empUrl();
+  const url = empUrl();
+  const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(url)}`;
+  document.getElementById('qrCanvas').innerHTML = `<img src="${qrImgUrl}" style="border-radius:8px;width:160px;height:160px">`;
+  document.getElementById('qrUrl').textContent = url;
 }
 
 async function copyEmpLink() {
