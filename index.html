@@ -544,7 +544,6 @@ function showDashboard() {
   document.getElementById('headerStore').textContent = currentStore.name;
   document.getElementById('settingsName').value      = currentStore.name;
   document.getElementById('settingsDesc').value      = currentStore.description || '';
-  generateQR();
   renderCatFilter();
   renderBreadGrid();
   showScreen('dashboard');
@@ -947,6 +946,7 @@ function switchView(view) {
   document.getElementById('fab').style.display = view === 'Breads' ? 'flex' : 'none';
 
   if (view === 'Categories') renderCatList();
+  if (view === 'Store')      generateQR();
 }
 
 // ── TOAST ──────────────────────────────────────────────────────
