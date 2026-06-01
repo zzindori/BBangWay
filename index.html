@@ -346,7 +346,10 @@ input[type=file] { display: none; }
     </div>
     <div class="settings-card">
       <div class="settings-card-title">접속 QR 코드</div>
-      <button class="btn-primary" onclick="openQrModal()">📱 QR 코드 보기</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" style="flex:1" onclick="openQrModal('customer')">👤 고객용 QR</button>
+        <button class="btn-secondary" style="flex:1" onclick="openQrModal('staff')">👷 직원용 QR</button>
+      </div>
     </div>
   </div>
 
@@ -366,7 +369,10 @@ input[type=file] { display: none; }
 <!-- Employee Screen -->
 <div id="empScreen">
   <div class="emp-header">
-    <div class="emp-store" id="empStoreName"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="emp-store" id="empStoreName"></div>
+      <button id="empQrBtn" style="display:none;padding:4px 10px;background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.4);border-radius:5px;font-size:11px;cursor:pointer" onclick="openEmpCustomerQR()">👤 고객 QR</button>
+    </div>
     <div class="emp-tabs">
       <button class="emp-tab active" id="empTabLearn"      onclick="switchEmpMode('learn')">📖 학습</button>
       <button class="emp-tab"        id="empTabQuiz"       onclick="switchEmpMode('quiz')">🎯 퀴즈</button>
@@ -463,19 +469,12 @@ input[type=file] { display: none; }
 
 <!-- QR Modal -->
 <div class="overlay" id="qrModal">
-  <div class="modal" style="max-width:340px">
-    <div class="modal-title">📱 접속 QR 코드</div>
-    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:4px 0 10px">
-      <div style="text-align:center">
-        <div style="font-size:11px;font-weight:bold;color:#cc0000;margin-bottom:6px">👤 고객용</div>
-        <div id="qrCustomer"></div>
-        <button class="btn-copy-link" style="margin-top:6px" onclick="copyLink('customer')">링크 복사</button>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:11px;font-weight:bold;color:#555;margin-bottom:6px">👷 직원용</div>
-        <div id="qrStaff"></div>
-        <button class="btn-copy-link" style="margin-top:6px" onclick="copyLink('staff')">링크 복사</button>
-      </div>
+  <div class="modal" style="max-width:280px">
+    <div class="modal-title" id="qrModalTitle">QR 코드</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:4px 0 12px">
+      <div id="qrSingle"></div>
+      <div style="font-size:11px;color:#bbb;text-align:center;word-break:break-all;max-width:240px" id="qrSingleUrl"></div>
+      <button class="btn-copy-link" id="qrCopyBtn">🔗 링크 복사</button>
     </div>
     <button class="btn-modal-cancel" style="width:100%" onclick="document.getElementById('qrModal').classList.remove('show')">닫기</button>
   </div>
@@ -999,28 +998,41 @@ async function makeQR(elId, url) {
   const el = document.getElementById(elId);
   el.innerHTML = '';
   try {
-    const dataUrl = await QRCode.toDataURL(url, { width: 150, margin: 1 });
-    el.innerHTML = `<img src="${dataUrl}" style="border-radius:8px;width:150px;height:150px">`;
+    const dataUrl = await QRCode.toDataURL(url, { width: 180, margin: 1 });
+    el.innerHTML = `<img src="${dataUrl}" style="border-radius:8px;width:180px;height:180px">`;
   } catch(e) {
-    el.innerHTML = `<div style="font-size:10px;word-break:break-all;color:#888;width:150px">${url}</div>`;
+    el.innerHTML = `<div style="font-size:10px;word-break:break-all;color:#888;width:180px">${url}</div>`;
   }
 }
 
-async function openQrModal() {
+async function openQrModal(mode) {
+  const url      = storeUrl(mode);
+  const titles   = { customer: '👤 고객용 QR', staff: '👷 직원용 QR' };
+  document.getElementById('qrModalTitle').textContent = titles[mode] || 'QR 코드';
+  document.getElementById('qrSingleUrl').textContent  = url;
+  document.getElementById('qrCopyBtn').onclick = async () => {
+    try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
+    catch { showToast('복사 실패', 'error'); }
+  };
   document.getElementById('qrModal').classList.add('show');
-  await Promise.all([
-    makeQR('qrCustomer', storeUrl('customer')),
-    makeQR('qrStaff',    storeUrl('staff')),
-  ]);
+  await makeQR('qrSingle', url);
 }
 
-async function copyLink(mode) {
-  const url = storeUrl(mode);
-  try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
-  catch { showToast('복사 실패', 'error'); }
-}
+function generateQR() { /* no-op */ }
 
-function generateQR() { /* no-op: QR은 모달에서 생성 */ }
+// 직원 화면에서 고객 QR 보여주기
+let empStoreCode = '';
+async function openEmpCustomerQR() {
+  const url = location.origin + location.pathname + '?store=' + empStoreCode;
+  document.getElementById('qrModalTitle').textContent = '👤 고객용 QR';
+  document.getElementById('qrSingleUrl').textContent  = url;
+  document.getElementById('qrCopyBtn').onclick = async () => {
+    try { await navigator.clipboard.writeText(url); showToast('링크 복사됐습니다 ✓'); }
+    catch { showToast('복사 실패', 'error'); }
+  };
+  document.getElementById('qrModal').classList.add('show');
+  await makeQR('qrSingle', url);
+}
 
 // ── EMPLOYEE SCREEN ────────────────────────────────────────────
 let empStore      = null;
@@ -1047,8 +1059,10 @@ async function loadEmployeeScreen(code) {
   empCategories = cats || [];
   empBreads     = brs  || [];
 
+  empStoreCode = code;
   const modeLabel = empMode === 'staff' ? ' — 직원' : '';
   document.getElementById('empStoreName').textContent = store.name + modeLabel;
+  document.getElementById('empQrBtn').style.display   = empMode === 'staff' ? '' : 'none';
   document.title = store.name + ' — BBangWay';
   buildLearnList();
   renderEmpCatBar();
