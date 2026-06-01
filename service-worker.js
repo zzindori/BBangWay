@@ -1,11 +1,11 @@
-﻿const CACHE_NAME = 'bbangway-v9';
+const CACHE_NAME = 'bbangway-v9';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.svg',
-  './icon-512.svg',
-  './icon-maskable.svg'
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable.png'
 ];
 
 self.addEventListener('install', (e) => {
@@ -27,13 +27,13 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // Supabase API ?붿껌? ??긽 ?ㅽ듃?뚰겕 ?곗꽑
-  if (url.hostname.includes('supabase.co') || url.hostname.includes('cdn.jsdelivr.net')) {
+  // Supabase, CDN 요청은 항상 네트워크 우선
+  if (url.hostname.includes('supabase.co') || url.hostname.includes('cdn.jsdelivr.net') || url.hostname.includes('generativelanguage.googleapis.com')) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
   }
 
-  // ?뺤쟻 ?먯궛? 罹먯떆 ?곗꽑, ?ㅽ뙣 ???ㅽ듃?뚰겕
+  // 정적 자산은 캐시 우선, 실패 시 네트워크
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
