@@ -1393,7 +1393,8 @@ async function captureAndRecognize() {
         setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
       }
     } catch(e) {
-      setVfHint('오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('[고객 인식 오류]', e);
+      setVfHint('오류: ' + e.message);
       setTimeout(() => setVfHint('빵을 카메라에 비추고 버튼을 누르세요'), 2500);
     }
     btn.classList.remove('scanning'); btn.disabled = false;
@@ -1530,7 +1531,8 @@ async function staffCaptureAndRecognize() {
         openMappingModal(geminiResult);
       }
     } catch(e) {
-      setStaffHint('오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('[staff 인식 오류]', e);
+      setStaffHint('오류: ' + e.message);
     }
     btn.classList.remove('scanning'); btn.disabled = false;
   }, 'image/jpeg', 0.85);
