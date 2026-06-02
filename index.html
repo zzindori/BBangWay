@@ -1173,9 +1173,11 @@ async function saveBread() {
       const ext  = file.name.split('.').pop().toLowerCase() || 'jpg';
       const path = `${currentStore.id}/${breadId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: upErr } = await sb.storage.from('bread-photos').upload(path, file);
-      if (upErr) { console.warn('사진 업로드 실패:', upErr.message); continue; }
+      if (upErr) { console.error('Storage 업로드 실패:', upErr); continue; }
       const { data: { publicUrl } } = sb.storage.from('bread-photos').getPublicUrl(path);
-      const { data: rec } = await sb.from('bread_photos').insert({ bread_id: breadId, photo_url: publicUrl }).select().single();
+      console.log('[insert photo]', { bread_id: breadId, photo_url: publicUrl });
+      const { data: rec, error: insErr } = await sb.from('bread_photos').insert({ bread_id: breadId, photo_url: publicUrl }).select().single();
+      console.log('[insert result]', rec, insErr);
       if (rec) uploadedIds.push({ idx: i, id: rec.id });
     }
 
