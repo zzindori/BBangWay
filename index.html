@@ -1210,6 +1210,25 @@ async function saveBread() {
     }
     if (finalRepId) await sb.from('bread_photos').update({ is_representative: true }).eq('id', finalRepId);
 
+    // 신규 사진이 있으면 Gemini로 자동 매핑 생성 (백그라운드, 실패해도 저장은 완료)
+    if (pendingPhotos.length > 0 && window.GEMINI_KEY) {
+      const repFile = pendingPhotos[repPendingIdx ?? 0]?.file || pendingPhotos[0]?.file;
+      if (repFile) {
+        (async () => {
+          try {
+            const base64     = await fileToBase64(repFile);
+            const geminiName = await callGeminiGeneric(base64, repFile.type || 'image/jpeg');
+            if (geminiName) {
+              await sb.from('bread_mappings').upsert(
+                { store_id: currentStore.id, gemini_result: geminiName, bread_id: breadId },
+                { onConflict: 'store_id,gemini_result' }
+              );
+            }
+          } catch (e) { console.warn('자동 매핑 실패:', e.message); }
+        })();
+      }
+    }
+
     // GLB 업로드
     if (pendingGlbFile) {
       const path = `${currentStore.id}/${breadId}/model.glb`;
