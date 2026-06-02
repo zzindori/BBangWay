@@ -376,7 +376,7 @@ input[type=file] { display: none; }
 <!-- Loading -->
 <div id="loading">
   <div class="loading-logo">🥐</div>
-  <div class="loading-title">BBangWay <span style="font-size:12px;color:#bbb;font-weight:normal">v13</span></div>
+  <div class="loading-title">BBangWay <span style="font-size:12px;color:#bbb;font-weight:normal">v14</span></div>
   <div class="loading-sub">불러오는 중...</div>
 </div>
 
@@ -420,7 +420,7 @@ input[type=file] { display: none; }
 <div id="dashboard">
   <div class="header">
     <div class="header-left">
-      <div class="header-title">🥐 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v13</span></div>
+      <div class="header-title">🥐 BBangWay <span style="font-size:10px;opacity:.5;font-weight:normal">v14</span></div>
       <div class="header-store" id="headerStore"></div>
     </div>
     <button class="btn-logout" onclick="logout()">로그아웃</button>
@@ -535,12 +535,13 @@ input[type=file] { display: none; }
 
   <!-- 목록 모드 -->
   <div id="empListView">
+    <div class="emp-cat-bar" id="empCatBar"></div>
     <div class="emp-bread-grid" id="empBreadGrid"></div>
   </div>
 
   <!-- 학습 모드 -->
   <div id="empLearnView">
-    <div class="emp-cat-bar" id="empCatBar"></div>
+    <div style="display:none" id="empCatBarOld"></div>
     <div class="learn-wrap">
       <div class="learn-card" id="learnCard"></div>
     </div>
@@ -1521,6 +1522,7 @@ async function loadEmployeeScreen(code) {
   ]);
   empCategories = cats || [];
   empBreads     = brs  || [];
+  learnCatId    = empCategories[0]?.id || null;
 
   empStoreCode = code;
   const modeLabel = empMode === 'staff' ? ' — 직원' : '';
@@ -1554,7 +1556,8 @@ function switchEmpMode(mode) {
 function renderEmpBreadGrid() {
   const grid = document.getElementById('empBreadGrid');
   if (!grid) return;
-  grid.innerHTML = empBreads.map(b => {
+  const list = learnCatId ? empBreads.filter(b => b.category_id === learnCatId) : empBreads;
+  grid.innerHTML = list.map(b => {
     const photo = b.bread_photos?.find(p => p.is_representative)?.photo_url || b.bread_photos?.[0]?.photo_url;
     const price = b.price != null ? b.price.toLocaleString() + '원' : '';
     return `<div class="emp-bread-card" onclick="openBreadDetail('${b.id}')">
@@ -1670,7 +1673,6 @@ function buildLearnList() {
 
 function renderEmpCatBar() {
   document.getElementById('empCatBar').innerHTML =
-    `<button class="cat-chip ${learnCatId === null ? 'active' : ''}" onclick="setLearnCat(null)">전체</button>` +
     empCategories.map(c =>
       `<button class="cat-chip ${learnCatId === c.id ? 'active' : ''}" onclick="setLearnCat('${c.id}')">${c.name}</button>`
     ).join('');
@@ -1681,6 +1683,7 @@ function setLearnCat(catId) {
   buildLearnList();
   renderEmpCatBar();
   renderLearnCard();
+  renderEmpBreadGrid();
 }
 
 function learnMove(dir) {
