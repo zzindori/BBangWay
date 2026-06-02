@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bbangway-v11';
+const CACHE_NAME = 'bbangway-v12';
 const STATIC_ASSETS = [
   './',
   './index.html',
