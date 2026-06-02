@@ -1000,7 +1000,9 @@ async function openBreadForm(breadId) {
     document.getElementById('breadForm').classList.add('show');
     const { data: photos, error: photoErr } = await sb.from('bread_photos')
       .select('*').eq('bread_id', breadId).order('created_at');
-    console.log('[photos]', photos, photoErr);
+    console.log('[breadId]', breadId);
+    console.log('[bread_photos in cache]', bread?.bread_photos);
+    console.log('[photos from DB]', photos, photoErr);
     if (photos?.length) {
       existingPhotos = photos.map(p => ({ id: p.id, url: p.photo_url, is_representative: p.is_representative }));
       repPhotoId = existingPhotos.find(p => p.is_representative)?.id || existingPhotos[0]?.id || null;
